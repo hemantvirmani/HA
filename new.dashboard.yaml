@@ -1,4 +1,29 @@
 title: My Home
+
+# ── Reusable Style Definitions (YAML Anchors) ─────────────────────────────────
+# Define card_mod styles once, reference with *anchor_name throughout.
+# The _styles key is ignored by Home Assistant; it exists only to hold anchors.
+# If HA rejects this key, move each anchor to its first usage site instead.
+_styles:
+  section_header: &style_section_header
+    style: |
+      ha-card { background-color: rgba(29, 78, 216, 0.95); }
+  teal_card: &style_teal
+    style: |
+      ha-card { background-color: rgb(45, 95, 125); }
+  greeting: &style_greeting
+    style: |
+      ha-card { background-color: rgba(2, 132, 199, 0.95); }
+  alert_red: &style_alert_red
+    style: |
+      ha-card { background-color: rgb(220, 53, 69); }
+  alert_red_alpha: &style_alert_red_alpha
+    style: |
+      ha-card { background-color: rgba(220, 53, 69, 0.95); }
+  thermostat_popup: &style_thermostat_popup
+    style: |
+      ha-card { background-color: rgb(37, 85, 178); }
+
 views:
   - title: Home
     icon: mdi:home-assistant
@@ -41,9 +66,7 @@ views:
             features_position: bottom
             icon: mdi:shield-home-outline
             icon_color: cyan
-            card_mod:
-              style: |
-                ha-card {background-color: rgba(2, 132, 199, 0.95);}
+            card_mod: *style_greeting
           - type: custom:mushroom-template-card
             secondary: >-
               {{ states('input_text.weather_alert_summary') | string }}{{
@@ -60,9 +83,7 @@ views:
             grid_options:
               columns: full
             fill_container: true
-            card_mod:
-              style: |
-                ha-card { background-color: rgb(220,53,69);}
+            card_mod: *style_alert_red
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
@@ -76,9 +97,7 @@ views:
                 secondary: ''
                 color: white
                 features_position: bottom
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - type: custom:bubble-card
                 card_type: button
                 button_type: name
@@ -354,9 +373,7 @@ views:
                 primary: Upper Floor
                 color: white
                 features_position: bottom
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - type: custom:bubble-card
                 card_type: button
                 button_type: name
@@ -621,9 +638,7 @@ views:
                 multiline_secondary: true
                 color: white
                 features_position: bottom
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - type: custom:bubble-card
                 card_type: climate
                 entity: climate.living_room
@@ -713,9 +728,7 @@ views:
                 primary: Battery Monitoring
                 multiline_secondary: false
                 icon_color: white
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - square: false
                 type: grid
                 cards:
@@ -723,29 +736,17 @@ views:
                     entity: sensor.front_door_battery_2
                     name: Front Lock
                     vertical: true
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
                   - type: tile
                     entity: sensor.garden_battery
                     name: Garden
                     vertical: true
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
                   - type: tile
                     entity: sensor.garden2_battery
                     name: Garden2
                     vertical: true
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
               - square: false
                 type: grid
                 cards:
@@ -754,29 +755,17 @@ views:
                     name: Hemant
                     vertical: true
                     features_position: bottom
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
                   - type: tile
                     entity: sensor.nupurs_iphone_battery_level
                     name: Nupur
                     vertical: true
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
                   - type: tile
                     entity: sensor.prax_iphone_battery_level
                     name: Prax
                     vertical: true
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
               - square: false
                 type: grid
                 cards:
@@ -785,31 +774,19 @@ views:
                     name: BY1 Sprinklr
                     vertical: true
                     features_position: bottom
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
                   - type: tile
                     entity: sensor.backyard_2_smart_hose_tap_timer_battery_level
                     name: BY 2 Sprinklr
                     vertical: true
                     features_position: bottom
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
                   - type: tile
                     entity: sensor.myipad_battery_level
                     name: iPad
                     vertical: true
                     features_position: bottom
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45, 95, 125);
-                          }
+                    card_mod: *style_teal
             grid_options:
               columns: full
           - type: vertical-stack
@@ -817,11 +794,7 @@ views:
               - type: custom:bubble-card
                 card_type: pop-up
                 hash: '#pop-living-room-thermostat'
-                card_mod:
-                  style: |
-                    ha-card {
-                      background-color: rgb(37,85,178);
-                    }
+                card_mod: *style_thermostat_popup
               - type: thermostat
                 entity: climate.living_room
                 features:
@@ -837,22 +810,14 @@ views:
                     style: dropdown
                 show_current_as_primary: true
                 name: Living Room Thermostat
-                card_mod:
-                  style: |
-                    ha-card {
-                      background-color: rgb(37,85,178);
-                    }
+                card_mod: *style_thermostat_popup
           - type: vertical-stack
             cards:
               - type: custom:bubble-card
                 card_type: pop-up
                 hash: '#pop-weather-details'
                 show_header: false
-                card_mod:
-                  style: |
-                    ha-card {
-                      background-color: rgb(220,53,69);
-                    }
+                card_mod: *style_alert_red
               - type: custom:mushroom-template-card
                 primary: Weather Alerts
                 secondary: >
@@ -886,11 +851,7 @@ views:
                 grid_options:
                   columns: full
                 fill_container: true
-                card_mod:
-                  style: |
-                    ha-card {
-                      background-color: rgba(220, 53, 69, 0.95);
-                      }
+                card_mod: *style_alert_red_alpha
             title: Weather Alerts
             grid_options:
               columns: 12
@@ -904,9 +865,7 @@ views:
             multiline_secondary: false
             color: white
             features_position: bottom
-            card_mod:
-              style: |
-                ha-card { background-color: rgba(29, 78, 216, 0.95); }
+            card_mod: *style_section_header
             grid_options:
               columns: 12
               rows: 1
@@ -921,11 +880,7 @@ views:
                 name: Wind Speed
                 show:
                   labels: true
-                card_mod:
-                  style: |
-                    ha-card {
-                      background-color: rgb(45,95,125);
-                      }
+                card_mod: *style_teal
               - type: custom:mini-graph-card
                 entities:
                   - sensor.airnow_air_quality_index
@@ -934,11 +889,7 @@ views:
                 font_size: 75
                 show:
                   labels: true
-                card_mod:
-                  style: |
-                    ha-card {
-                      background-color: rgb(45,95,125);
-                      }
+                card_mod: *style_teal
           - type: horizontal-stack
             cards:
               - type: custom:mini-graph-card
@@ -950,11 +901,7 @@ views:
                 name: Outside Temp
                 show:
                   labels: true
-                card_mod:
-                  style: |
-                    ha-card {
-                      background-color: rgb(45, 95, 125);
-                      }
+                card_mod: *style_teal
               - type: custom:mini-graph-card
                 entities:
                   - sensor.home_humidity
@@ -964,11 +911,7 @@ views:
                 name: Outside Humidity
                 show:
                   labels: true
-                card_mod:
-                  style: |
-                    ha-card {
-                      background-color: rgb(45, 95, 125);
-                      }
+                card_mod: *style_teal
           - type: custom:clock-weather-card
             entity: weather.openweathermap
             animated_icon: true
@@ -977,11 +920,7 @@ views:
             apparent_sensor: sensor.openweathermap_feels_like_temperature
             aqi_sensor: sensor.airnow_air_quality_index
             hourly_forecast: false
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                  }
+            card_mod: *style_teal
           - type: custom:horizon-card
             title: Sun & Moon
             moon: true
@@ -998,11 +937,7 @@ views:
               moonrise: true
               moonset: true
               moon_phase: true
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                }
+            card_mod: *style_teal
     theme: Mushroom Square Shadow
   - title: Security
     icon: mdi:shield-home-outline
@@ -1018,9 +953,7 @@ views:
             cards:
               - type: custom:mushroom-template-card
                 primary: Ring Alarm
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - states:
                   - arm_home
                   - arm_away
@@ -1044,9 +977,7 @@ views:
                       }
               - type: custom:mushroom-template-card
                 primary: CO / Smoke Alarm
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
                   - type: tile
@@ -1056,11 +987,7 @@ views:
                       - state
                       - last_updated
                     vertical: true
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45,95,125);
-                          }
+                    card_mod: *style_teal
                   - type: tile
                     entity: binary_sensor.smoke_co_listener_37339_smoke
                     name: Smoke
@@ -1069,16 +996,10 @@ views:
                     state_content:
                       - state
                       - last_changed
-                    card_mod:
-                      style: |
-                        ha-card {
-                          background-color: rgb(45,95,125);
-                          }
+                    card_mod: *style_teal
               - type: custom:mushroom-template-card
                 primary: Check the Motion !!
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95) }
+                card_mod: *style_section_header
               - type: tile
                 entity: binary_sensor.motion_detector_stairs
                 name: Above Stairs
@@ -1086,20 +1007,14 @@ views:
                 state_content:
                   - state
                   - last_changed
-                card_mod:
-                  style: |
-                    ha-card { 
-                      background-color: rgb(45,95,125); 
-                    }
+                card_mod: *style_teal
       - type: grid
         cards:
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 primary: Sensors @ Entrance
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
                   - type: tile
@@ -1124,9 +1039,7 @@ views:
                     entity: binary_sensor.entry_room_side_window
               - type: custom:mushroom-template-card
                 primary: Sensors for Living Room (LR) et. al.
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
@@ -1147,9 +1060,7 @@ views:
                     entity: binary_sensor.living_room_back_door
               - type: custom:mushroom-template-card
                 primary: Upper Floor Sensors
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
@@ -1174,9 +1085,7 @@ views:
             cards:
               - type: custom:mushroom-template-card
                 primary: Cameras with Live Feed
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95); }
+                card_mod: *style_section_header
               - show_state: true
                 show_name: true
                 camera_view: auto
@@ -1211,9 +1120,7 @@ views:
               columns: full
             color: white
             features_position: bottom
-            card_mod:
-              style: |
-                ha-card { background-color: rgba(29, 78, 216, 0.95); }
+            card_mod: *style_section_header
           - type: custom:mushroom-vacuum-card
             entity: vacuum.kalia
             icon_animation: true
@@ -1231,11 +1138,7 @@ views:
             icon_type: entity-picture
             tap_action:
               action: more-info
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45, 95,125);
-                }
+            card_mod: *style_teal
           - type: custom:mushroom-vacuum-card
             entity: vacuum.samba
             icon_animation: true
@@ -1253,20 +1156,14 @@ views:
             icon_type: entity-picture
             tap_action:
               action: more-info
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45, 95,125);
-                }
+            card_mod: *style_teal
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 icon: mdi:printer-wireless
                 primary: HP DeskJet 3700 Series
                 icon_color: white
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95) }
+                card_mod: *style_section_header
               - type: custom:bubble-card
                 card_type: button
                 button_type: name
@@ -1344,9 +1241,7 @@ views:
             icon: mdi:printer-wireless
             primary: Google Nest Wifi Pro Router
             icon_color: white
-            card_mod:
-              style: |
-                ha-card { background-color: rgba(29, 78, 216, 0.95); }
+            card_mod: *style_section_header
             fill_container: true
             grid_options:
               columns: full
@@ -1358,45 +1253,33 @@ views:
                 name: WAN Status
                 icon: mdi:wifi
                 fill_container: false
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgb(45, 95, 125); }
+                card_mod: *style_teal
               - type: custom:mushroom-entity-card
                 entity: sensor.google_wifi_status
                 name: Wifi Status
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgb(45, 95, 125); }
+                card_mod: *style_teal
               - graph: line
                 type: sensor
                 entity: sensor.onhub_packet_upload_speed
                 name: Upload Speed
                 detail: 2
                 hours_to_show: 48
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgb(45, 95, 125); }
+                card_mod: *style_teal
               - graph: line
                 type: sensor
                 entity: sensor.onhub_packet_download_speed
                 name: Download Speed
                 detail: 2
                 hours_to_show: 40
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgb(45, 95, 125); }
+                card_mod: *style_teal
               - type: custom:mushroom-entity-card
                 entity: sensor.onhub_external_ip
                 name: External IP
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgb(45, 95, 125); }
+                card_mod: *style_teal
               - type: custom:mushroom-entity-card
                 entity: sensor.google_wifi_uptime
                 name: Up Time
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgb(45, 95, 125); }
+                card_mod: *style_teal
             columns: 2
           - type: sensor
             entity: sensor.google_wifi_last_restart
@@ -1405,9 +1288,7 @@ views:
             hours_to_show: 48
             grid_options:
               columns: full
-            card_mod:
-              style: |
-                ha-card { background-color: rgb(45, 95, 125); }
+            card_mod: *style_teal
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
@@ -1415,9 +1296,7 @@ views:
                 primary: Sprinklers
                 color: white
                 features_position: bottom
-                card_mod:
-                  style: |
-                    ha-card { background-color: rgba(29, 78, 216, 0.95) }
+                card_mod: *style_section_header
               - square: false
                 type: grid
                 cards:
@@ -1425,16 +1304,12 @@ views:
                     entity: switch.backyard1_zone_zone
                     features_position: bottom
                     vertical: false
-                    card_mod:
-                      style: |
-                        ha-card { background-color: rgb(45, 95, 125); }
+                    card_mod: *style_teal
                   - type: tile
                     entity: switch.backyard_2_sprinklr_zone_zone
                     features_position: bottom
                     vertical: false
-                    card_mod:
-                      style: |
-                        ha-card { background-color: rgb(45, 95, 125); }
+                    card_mod: *style_teal
                 columns: 2
       - type: grid
         cards:
@@ -1519,9 +1394,7 @@ views:
             multiline_secondary: false
             icon_color: white
             secondary: ''
-            card_mod:
-              style: |
-                ha-card { background-color: rgba(29, 78, 216, 0.95); }
+            card_mod: *style_section_header
             grid_options:
               columns: full
           - type: custom:apexcharts-card
@@ -1537,11 +1410,7 @@ views:
               - entity: sensor.openweathermap_feels_like_temperature
                 name: Outside Temperature
               - entity: sensor.living_room_temperature
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                }
+            card_mod: *style_teal
           - type: custom:apexcharts-card
             graph_span: 3d
             span:
@@ -1555,11 +1424,7 @@ views:
               - entity: sensor.openweathermap_humidity
                 name: Outside Humidity
               - entity: sensor.living_room_humidity
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                }
+            card_mod: *style_teal
       - type: grid
         cards:
           - icon: phu:intel-cpu
@@ -1568,9 +1433,7 @@ views:
             multiline_secondary: false
             icon_color: white
             secondary: ''
-            card_mod:
-              style: |
-                ha-card { background-color: rgba(29, 78, 216, 0.95); }
+            card_mod: *style_section_header
             grid_options:
               columns: full
           - graph: line
@@ -1579,44 +1442,28 @@ views:
             entity: sensor.system_monitor_memory_use_percent
             name: Memory
             hours_to_show: 48
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                }
+            card_mod: *style_teal
           - graph: line
             type: sensor
             entity: sensor.system_monitor_processor_use
             detail: 2
             name: CPU
             hours_to_show: 48
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                }
+            card_mod: *style_teal
           - graph: line
             type: sensor
             detail: 2
             entity: sensor.system_monitor_processor_temperature
             hours_to_show: 48
             name: CPU Temp
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                }
+            card_mod: *style_teal
           - graph: line
             type: sensor
             entity: sensor.system_monitor_disk_use_percent
             detail: 2
             hours_to_show: 48
             name: Disk Usage
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                }
+            card_mod: *style_teal
           - graph: none
             type: sensor
             detail: 2
@@ -1624,11 +1471,7 @@ views:
             name: Last Boot
             grid_options:
               columns: full
-            card_mod:
-              style: |
-                ha-card {
-                  background-color: rgb(45,95,125);
-                }
+            card_mod: *style_teal
       - type: grid
         cards:
           - icon: mdi:weather-pouring
@@ -1640,9 +1483,7 @@ views:
               columns: full
             color: white
             features_position: bottom
-            card_mod:
-              style: |
-                ha-card { background-color: rgba(29, 78, 216, 0.95); }
+            card_mod: *style_section_header
           - type: vertical-stack
             cards:
               - type: gauge
