@@ -11,6 +11,9 @@ _styles:
   teal_card: &style_teal
     style: |
       ha-card { background-color: rgb(45, 95, 125); }
+  teal_hidden: &style_teal_hidden
+    style: |
+      ha-card { background-color: rgb(45, 95, 125); display: none; }
   greeting: &style_greeting
     style: |
       ha-card { background-color: rgba(2, 132, 199, 0.95); }
@@ -156,15 +159,22 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
                   .bubble-button-background {
-                    background-color: rgb(52, 152, 220) !important;
+                    background-color: var(--bubble-button-bg) !important;
                   }
                   .bubble-icon-container {
-                    background: rgb(15, 45, 100) !important;
+                    background: var(--bubble-icon-container-bg) !important;
                   }
                   .bubble-sub-button-icon {
-                    --mdc-icon-size: 13px !important;
-                  }  
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
                   .bubble-sub-button-1 {
                     color: ${hass.states['light.main_door_ceiling_light_tl'].state === 'on' ? 'white' : 'white'} !important;
                     background-color: ${hass.states['light.main_door_ceiling_light_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
@@ -180,9 +190,7 @@ views:
                     background-color: ${hass.states['light.garage_back_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
                     font-size: 10px
                   }
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                  }
+
                 show_icon: true
                 show_name: false
                 scrolling_effect: false
@@ -241,15 +249,22 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
                   .bubble-button-background {
-                    background-color: rgb(52, 152, 220) !important;
+                    background-color: var(--bubble-button-bg) !important;
                   }
                   .bubble-icon-container {
-                    background: rgb(15, 45, 100) !important;
+                    background: var(--bubble-icon-container-bg) !important;
                   }
                   .bubble-sub-button-icon {
-                    --mdc-icon-size: 13px !important;
-                  }  
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
                   .bubble-sub-button-1 {
                     color: ${hass.states['light.front_string_lights'].state === 'on' ? 'white' : 'white'} !important;
                     background-color: ${hass.states['light.front_string_lights'].state === 'on' ? '#FF8000' : '#37474F'} !important;
@@ -261,9 +276,7 @@ views:
                     font-size: 10px
                   }  
 
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                  }
+
                 show_icon: true
                 show_name: false
                 scrolling_effect: false
@@ -336,15 +349,22 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
                   .bubble-button-background {
-                      background-color: rgba(52, 152, 220, 0.95);
+                      background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: #0F2C64; /* Slightly darker blue-gray for subtle contrast */
+                      background: var(--bubble-icon-container-bg);
                   }
                   .bubble-sub-button-icon {
-                    --mdc-icon-size: 13px !important;
-                  }  
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
                   .bubble-sub-button-1 {
                     color: ${hass.states['light.living_room_lamp_tl'].state === 'on' ? 'white' : 'white'} !important;
                     background-color: ${hass.states['light.living_room_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
@@ -360,9 +380,7 @@ views:
                     background-color: ${hass.states['light.living_room_string_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
                     font-size: 10px
                   }
-                    :host {
-                      --bubble-button-border-radius: 7px;
-                    }
+
                 show_icon: true
                 show_name: false
                 scrolling_effect: false
@@ -441,17 +459,24 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
                   .bubble-button-background {
-                      background-color: rgba(52, 152, 220, 0.95);
+                      background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: #0F2C64;
+                      background: var(--bubble-icon-container-bg);
                   }
 
                     .bubble-sub-button-icon {
-                      --mdc-icon-size: 13px !important;
+                      --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                     }
-                    
+
                     .bubble-sub-button-1 {
                       color: ${hass.states['light.king_lamp_lt'].state === 'on' ? 'white' : 'white'} !important;
                       background-color: ${hass.states['light.king_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
@@ -467,9 +492,7 @@ views:
                       background-color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
                       font-size: 10px
                     }
-                    :host {
-                      --bubble-button-border-radius: 7px;
-                    }
+
                 show_icon: true
                 show_name: true
                 scrolling_effect: false
@@ -518,17 +541,24 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
                   .bubble-button-background {
-                      background-color: rgba(52, 152, 220, 0.95);
+                      background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: #0F2C64;
+                      background: var(--bubble-icon-container-bg);
                   }
 
                     .bubble-sub-button-icon {
-                      --mdc-icon-size: 13px !important;
+                      --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                     }
-                    
+
                       .bubble-sub-button-1 {
                       color: ${hass.states['fan.study_fan_tl'].state === 'on' ? 'white' : 'white'} !important;
                       background-color: ${hass.states['fan.study_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
@@ -540,9 +570,7 @@ views:
                       background-color: ${hass.states['light.study_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
                       font-size: 10px
                     }
-                    :host {
-                      --bubble-button-border-radius: 7px;
-                    }
+
                 show_icon: true
                 show_name: true
                 scrolling_effect: false
@@ -600,15 +628,22 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
                   .bubble-button-background {
-                      background-color: rgba(52, 152, 220, 0.95);
+                      background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: #0F2C64;
+                      background: var(--bubble-icon-container-bg);
                   }
                   .bubble-sub-button-icon {
-                    --mdc-icon-size: 13px !important;
-                  }  
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
                   .bubble-sub-button-1 {
                     color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? 'white' : 'white'} !important;
                     background-color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? '' : '#37474F'} !important;
@@ -619,9 +654,7 @@ views:
                     background-color: ${hass.states['light.temple_light'].state === 'on' ? '#ff7800' : '#37474F'} !important;
                     font-size: 10px
                   }
-                    :host {
-                      --bubble-button-border-radius: 7px;
-                    }
+
                 show_icon: true
                 show_name: true
                 scrolling_effect: false
@@ -668,14 +701,20 @@ views:
                   action: navigate
                   navigation_path: '#pop-living-room-thermostat'
                 styles: |-
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-icon-container-black: black;
+                    --bubble-sub-icon-size: 13px;
+                  }
                   .bubble-color-background {
                       background-color: rgb(45, 95, 125) !important;
                   }
                   .bubble-icon-container {
-                      background: black;
+                      background: var(--bubble-icon-container-black);
                   }
                   .bubble-sub-button-icon {
-                    --mdc-icon-size: 13px !important;
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
               - type: custom:bubble-card
                 card_type: media-player
@@ -692,14 +731,20 @@ views:
                   volume_button: true
                 card_layout: large-2-rows
                 styles: |-
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-icon-container-black: black;
+                    --bubble-sub-icon-size: 13px;
+                  }
                   .bubble-media-player-container {
                       background-color: rgb(45, 95, 125) !important;
                   }
                   .bubble-icon-container {
-                      background: black;
+                      background: var(--bubble-icon-container-black);
                   }
                   .bubble-sub-button-icon {
-                    --mdc-icon-size: 13px !important;
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
               - type: custom:bubble-card
                 card_type: media-player
@@ -713,14 +758,20 @@ views:
                 card_layout: large-2-rows
                 cover_background: false
                 styles: |-
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-icon-container-black: black;
+                    --bubble-sub-icon-size: 13px;
+                  }
                   .bubble-media-player-container {
                       background-color: rgb(45, 95, 125) !important;
                   }
                   .bubble-icon-container {
-                      background: black;
+                      background: var(--bubble-icon-container-black);
                   }
                   .bubble-sub-button-icon {
-                    --mdc-icon-size: 13px !important;
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                 entity: media_player.192_168_86_33_sonos_arc
               - type: custom:mushroom-template-card
@@ -770,23 +821,23 @@ views:
                 type: grid
                 cards:
                   - type: tile
-                    entity: sensor.backyard1_smart_hose_tap_timer_battery_level
-                    name: BY1 Sprinklr
-                    vertical: true
-                    features_position: bottom
-                    card_mod: *style_teal
-                  - type: tile
-                    entity: sensor.backyard_2_smart_hose_tap_timer_battery_level
-                    name: BY 2 Sprinklr
-                    vertical: true
-                    features_position: bottom
-                    card_mod: *style_teal
-                  - type: tile
                     entity: sensor.myipad_battery_level
                     name: iPad
                     vertical: true
                     features_position: bottom
                     card_mod: *style_teal
+                  - type: tile
+                    entity: sensor.backyard1_smart_hose_tap_timer_battery_level
+                    name: BY1 Sprinklr
+                    vertical: true
+                    features_position: bottom
+                    card_mod: *style_teal_hidden
+                  - type: tile
+                    entity: sensor.backyard_2_smart_hose_tap_timer_battery_level
+                    name: BY 2 Sprinklr
+                    vertical: true
+                    features_position: bottom
+                    card_mod: *style_teal_hidden
             grid_options:
               columns: full
           - type: vertical-stack
@@ -1213,14 +1264,21 @@ views:
                   tap_action:
                     action: more-info
                 styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
                   .bubble-button-background {
-                      background-color: rgba(52, 152, 220, 0.95); /* Muted blue-gray for calm readability */
+                      background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: #0F2C64; /* Slightly darker blue-gray for subtle contrast */
+                      background: var(--bubble-icon-container-bg);
                   }
                   .bubble-sub-button-icon {
-                    --mdc-icon-size: 13px !important;
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
                     background-color:  '#37474F'} !important;
@@ -1234,9 +1292,7 @@ views:
                   background-color:  '#37474F'} !important;
                   font-size: 12px
                   }
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                  }
+
           - type: custom:mushroom-template-card
             icon: mdi:printer-wireless
             primary: Google Nest Wifi Pro Router
