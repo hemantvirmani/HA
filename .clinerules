@@ -1,0 +1,119 @@
+# Home Assistant Development Rules
+
+## Project Context
+- **Installation:** Docker / Container-based
+- **Dashboard Path:** `/config/lovelace/ui-lovelace.yaml`
+- **Reload Command:** `docker exec homeassistant homeassistant --script reload_core_config`
+
+## Installed Custom Cards
+- **card_mod** - CSS styling (`card_mod:` key)
+- **Mushroom** - template, entity, person, vacuum, chips cards
+- **Bubble** - button, climate, media-player, pop-up cards
+
+## YAML Formatting Rules
+1. **Indentation:** Always use 2 spaces (never tabs)
+2. **Anchors:** Define reusable styles with YAML anchors at top level in `_styles:` section
+3. **Aliases:** Reference anchors with `*anchor_name`
+4. **Comments:** Use comments to explain complex configurations
+5. **Structure:** Keep related cards grouped in logical sections
+
+## Dashboard Structure Rules
+1. Use `type: sections` for modern layout
+2. Organize into logical views (Home, Security, Devices, Watchtower, Extras)
+3. Use `type: grid` cards for organized placement
+4. Design for mobile, tablet, and desktop
+
+## Styling Guidelines
+- **Consistency:** Use consistent color scheme (section headers: `rgb(29, 78, 216)`, teal cards: `rgb(45, 95, 125)`)
+- **Contrast:** Ensure good contrast for readability
+- **YAML Anchors:** Define common styles once, reuse multiple times
+- **CSS:** Use `!important` sparingly in card_mod styles
+- **Dynamic:** Use template variables for entity-state-based styling
+
+## Entity Naming
+- Use descriptive names matching device functionality
+- Follow Home Assistant naming conventions
+- Group related entities with prefixes (e.g., `light.living_room_*`)
+
+## Performance Rules
+- Use conditional cards for lazy loading
+- Don't exceed 50-100 entities per view
+- Use appropriately sized images
+- Leverage browser caching
+
+## Error Prevention
+1. Always validate YAML syntax before deployment
+2. Ensure all referenced entities exist
+3. Check custom cards are installed
+4. Test on multiple browsers and devices
+5. Backup working dashboards before major changes
+
+## Security Rules
+- Never include passwords or API keys in dashboard files
+- Be selective about displayed entities
+- Consider user permissions on shared dashboards
+- Use SSH key authentication for deployment
+
+## Code Review Checklist
+- [ ] YAML syntax valid (use `python -c "import yaml; yaml.safe_load(open('file.yaml'))"`)
+- [ ] All referenced entities exist in Home Assistant
+- [ ] Custom cards installed and compatible
+- [ ] Styles consistent with dashboard theme
+- [ ] Colors have good contrast
+- [ ] No duplicate keys in YAML
+- [ ] Correct indentation (2 spaces, no tabs)
+- [ ] YAML anchors properly referenced
+- [ ] Mobile responsive
+- [ ] No browser console errors
+
+## Common Pitfalls to Avoid
+1. Don't hardcode IP addresses or secrets
+2. Keep Jinja2 templates simple and readable
+3. Avoid deeply nested YAML structures
+4. Always verify entities exist before adding
+5. Ensure custom cards are installed
+6. Always test on mobile devices
+7. Never skip YAML validation before deployment
+
+## Custom Card Syntax Examples
+
+### card_mod
+```yaml
+card_mod:
+  style: |
+    ha-card {
+      background-color: rgba(29, 78, 216, 0.95);
+    }
+```
+
+### Mushroom Cards
+```yaml
+type: custom:mushroom-template-card
+primary: "Hello, {{user}}"
+icon_color: cyan
+card_mod: *style_anchor
+multiline_secondary: true
+```
+
+### Bubble Cards
+```yaml
+type: custom:bubble-card
+card_type: button
+name: Entrance
+icon: mdi:outdoor-lamp
+show_state: true
+tap_action:
+  action: toggle
+styles: |
+  .bubble-button-background {
+    background-color: rgb(52, 152, 220) !important;
+  }
+```
+
+## Development Workflow
+1. Edit `new.dashboard.yaml` locally
+2. Validate YAML syntax
+3. Test in browser if possible
+4. Deploy with `python deploy_dashboard.py --host IP --user root --key ~/.ssh/id_rsa`
+5. Verify in Home Assistant UI
+6. Iterate as needed
