@@ -1,0 +1,2007 @@
+title: My Home
+
+# ── Reusable Style Definitions (YAML Anchors) ─────────────────────────────────
+# Define card_mod styles once, reference with *anchor_name throughout.
+# The _styles key is ignored by Home Assistant; it exists only to hold anchors.
+# If HA rejects this key, move each anchor to its first usage site instead.
+_styles:
+  section_header: &style_section_header
+    style: |
+      ha-card { background-color: rgba(29, 78, 216, 0.95); }
+  section_header_hidden: &style_section_header_hidden
+    style: |
+      ha-card { background-color: rgba(29, 78, 216, 0.95); display: none; }
+  teal_card: &style_teal
+    style: |
+      ha-card { background-color: rgb(45, 95, 125); }
+  teal_hidden: &style_teal_hidden
+    style: |
+      ha-card { background-color: rgb(45, 95, 125); display: none; }
+  greeting: &style_greeting
+    style: |
+      ha-card { background-color: rgba(2, 132, 199, 0.95); }
+  alert_red: &style_alert_red
+    style: |
+      ha-card { background-color: rgb(220, 53, 69); }
+  alert_red_alpha: &style_alert_red_alpha
+    style: |
+      ha-card { background-color: rgba(220, 53, 69, 0.95); }
+  thermostat_popup: &style_thermostat_popup
+    style: |
+      ha-card { background-color: rgb(37, 85, 178); }
+
+views:
+  - title: Home
+    icon: mdi:home-assistant
+    badges: []
+    cards: []
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        cards:
+          - type: custom:mushroom-template-card
+            primary: |-
+              {% set time = now().hour %}
+              {% if (time >= 19) %}
+                  Good Evening, {{user}} !!
+              {% elif (time >= 12) %}
+                  Good Afternoon, {{user}} !!
+              {% elif (time >= 5) %}
+                  Good Morning, {{user}} !!
+              {% else %}
+                  Hello, {{user}} !!
+              {% endif %}
+            secondary: >-
+              It is 
+
+              {% set entity_weather = "weather.openweathermap" %}
+
+              {{ states(entity_weather) | title }}, {{
+              state_attr(entity_weather, "temperature") }}{{
+              state_attr(entity_weather, "temperature_unit") }} Outside
+            multiline_secondary: false
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            grid_options:
+              columns: full
+            features_position: bottom
+            icon: mdi:shield-home-outline
+            icon_color: cyan
+            card_mod: *style_greeting
+          - type: custom:mushroom-template-card
+            secondary: >-
+              {{ states('input_text.weather_alert_summary') | string }}{{
+              states('input_text.weather_alert_remainder') | string }}
+            multiline_secondary: true
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: '#pop-weather-details'
+            hold_action:
+              action: none
+            double_tap_action:
+              action: none
+            grid_options:
+              columns: full
+            fill_container: true
+            card_mod: *style_alert_red
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                icon: mdi:home-floor-1
+                primary: |-
+                  {% set lrtemp = states('sensor.living_room_temperature') %}
+
+                  {% set lrhumidity = states('sensor.living_room_humidity') %}
+                  Entrance & Living Room ({{lrtemp}}°F, {{lrhumidity}}%)
+                multiline_secondary: false
+                secondary: ''
+                color: white
+                features_position: bottom
+                card_mod: *style_section_header
+              - type: custom:bubble-card
+                card_type: button
+                button_type: name
+                sub_button:
+                  - entity: light.main_door_ceiling_light_tl
+                    name: Ceiling
+                    icon: mdi:ceiling-light
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                  - entity: lock.front_door
+                    show_attribute: false
+                    icon: mdi:lock
+                    show_icon: true
+                    show_name: false
+                    name: Lock
+                    show_state: true
+                  - entity: light.garage_back_light
+                    name: Garage Rear
+                    icon: mdi:lightbulb
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                name: Entrance
+                double_tap_action:
+                  action: none
+                hold_action:
+                  action: more-info
+                icon: mdi:outdoor-lamp
+                show_state: true
+                tap_action:
+                  action: toggle
+                button_action:
+                  double_tap_action:
+                    action: none
+                  hold_action:
+                    action: more-info
+                  tap_action:
+                    action: toggle
+                styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
+                  .bubble-button-background {
+                    background-color: var(--bubble-button-bg) !important;
+                  }
+                  .bubble-icon-container {
+                    background: var(--bubble-icon-container-bg) !important;
+                  }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+                  .bubble-sub-button-1 {
+                    color: ${hass.states['light.main_door_ceiling_light_tl'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.main_door_ceiling_light_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px
+                  }  
+                  .bubble-sub-button-2 {
+                    color: ${hass.states['lock.front_door'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['lock.front_door'].state === 'on' ? '' : '#37474F'} !important;
+                    font-size: 10px
+                  }
+                  .bubble-sub-button-3 {
+                    color: ${hass.states['light.garage_back_light'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.garage_back_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px
+                  }
+
+                show_icon: true
+                show_name: false
+                scrolling_effect: false
+                show_last_changed: false
+                show_attribute: true
+              - type: custom:bubble-card
+                card_type: button
+                button_type: name
+                sub_button:
+                  main:
+                    - entity: light.front_string_lights
+                      name: Front Strip
+                      icon: mdi:string-lights
+                      show_state: false
+                      show_name: true
+                      show_attribute: false
+                      show_last_changed: false
+                      state_background: true
+                      show_background: true
+                      tap_action:
+                        action: toggle
+                      hold_action:
+                        action: more-info
+                      show_icon: true
+                      show_arrow: false
+                    - entity: light.entry_string_lights
+                      name: Entry Strip
+                      icon: mdi:string-lights
+                      show_state: false
+                      show_name: true
+                      show_attribute: false
+                      show_last_changed: false
+                      state_background: true
+                      show_background: true
+                      tap_action:
+                        action: toggle
+                      hold_action:
+                        action: more-info
+                      show_icon: true
+                      show_arrow: false
+                  bottom: []
+                name: Entrance
+                double_tap_action:
+                  action: none
+                hold_action:
+                  action: more-info
+                icon: mdi:outdoor-lamp
+                show_state: true
+                tap_action:
+                  action: toggle
+                button_action:
+                  double_tap_action:
+                    action: none
+                  hold_action:
+                    action: more-info
+                  tap_action:
+                    action: toggle
+                styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
+                  .bubble-button-background {
+                    background-color: var(--bubble-button-bg) !important;
+                  }
+                  .bubble-icon-container {
+                    background: var(--bubble-icon-container-bg) !important;
+                  }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+                  .bubble-sub-button-1 {
+                    color: ${hass.states['light.front_string_lights'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.front_string_lights'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px
+                  }
+                  .bubble-sub-button-2 {
+                    color: ${hass.states['light.entry_string_lights'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.entry_string_lights'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px
+                  }  
+
+
+                show_icon: true
+                show_name: false
+                scrolling_effect: false
+                show_last_changed: false
+                show_attribute: true
+              - type: custom:bubble-card
+                card_type: button
+                button_type: name
+                sub_button:
+                  - entity: light.living_room_lamp_tl
+                    name: Lamp 1
+                    icon: mdi:floor-lamp-dual
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                  - entity: light.living_room_lamp_2_tl
+                    name: Lamp 2
+                    icon: mdi:floor-lamp-dual
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                  - entity: light.living_room_string_light
+                    name: String Lights
+                    icon: mdi:string-lights
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                name: Living Room
+                double_tap_action:
+                  action: none
+                hold_action:
+                  action: more-info
+                card_layout: large
+                icon: mdi:home-floor-1
+                show_state: true
+                tap_action:
+                  action: toggle
+                button_action:
+                  double_tap_action:
+                    action: none
+                  hold_action:
+                    action: more-info
+                  tap_action:
+                    action: toggle
+                styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
+                  .bubble-button-background {
+                      background-color: var(--bubble-button-bg);
+                  }
+                  .bubble-icon-container {
+                      background: var(--bubble-icon-container-bg);
+                  }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+                  .bubble-sub-button-1 {
+                    color: ${hass.states['light.living_room_lamp_tl'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.living_room_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px
+                  }  
+                  .bubble-sub-button-2 {
+                    color: ${hass.states['light.living_room_lamp_2_tl'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.living_room_lamp_2_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px
+                  }  
+                    .bubble-sub-button-3 {
+                    color: ${hass.states['light.living_room_string_light'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.living_room_string_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px
+                  }
+
+                show_icon: true
+                show_name: false
+                scrolling_effect: false
+                show_last_changed: false
+                show_attribute: true
+              - type: custom:mushroom-template-card
+                icon: mdi:home-floor-2
+                primary: Upper Floor
+                color: white
+                features_position: bottom
+                card_mod: *style_section_header
+              - type: custom:bubble-card
+                card_type: button
+                button_type: name
+                sub_button:
+                  - entity: light.king_lamp_lt
+                    name: King
+                    icon: mdi:floor-lamp
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                  - entity: light.queen_lamp_lt
+                    name: Queen
+                    icon: mdi:floor-lamp
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                  - entity: fan.nupur_fan_tl
+                    name: Nupur
+                    icon: mdi:fan
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                name: MBR
+                double_tap_action:
+                  action: none
+                hold_action:
+                  action: more-info
+                card_layout: large
+                icon: mdi:bed
+                show_state: true
+                tap_action:
+                  action: toggle
+                button_action:
+                  double_tap_action:
+                    action: none
+                  hold_action:
+                    action: more-info
+                  tap_action:
+                    action: toggle
+                styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
+                  .bubble-button-background {
+                      background-color: var(--bubble-button-bg);
+                  }
+                  .bubble-icon-container {
+                      background: var(--bubble-icon-container-bg);
+                  }
+
+                    .bubble-sub-button-icon {
+                      --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                    }
+
+                    .bubble-sub-button-1 {
+                      color: ${hass.states['light.king_lamp_lt'].state === 'on' ? 'white' : 'white'} !important;
+                      background-color: ${hass.states['light.king_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                      font-size: 10px
+                    }  
+                    .bubble-sub-button-2 {
+                      color: ${hass.states['light.queen_lamp_lt'].state === 'on' ? 'white' : 'white'} !important;
+                      background-color: ${hass.states['light.queen_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                      font-size: 10px
+                    }  
+                    .bubble-sub-button-3 {
+                      color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? 'white' : 'white'} !important;
+                      background-color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
+                      font-size: 10px
+                    }
+
+                show_icon: true
+                show_name: true
+                scrolling_effect: false
+                show_last_changed: false
+                show_attribute: true
+              - type: custom:bubble-card
+                card_type: button
+                button_type: name
+                sub_button:
+                  - entity: fan.study_fan_tl
+                    name: Fan
+                    icon: mdi:fan
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                  - entity: light.study_lamp_tl
+                    name: Lamp
+                    icon: mdi:floor-lamp-outline
+                    show_name: true
+                    tap_action:
+                      action: toggle
+                name: Study
+                double_tap_action:
+                  action: none
+                hold_action:
+                  action: more-info
+                card_layout: large
+                icon: mdi:account-school
+                show_state: true
+                tap_action:
+                  action: toggle
+                button_action:
+                  double_tap_action:
+                    action: none
+                  hold_action:
+                    action: more-info
+                  tap_action:
+                    action: toggle
+                styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
+                  .bubble-button-background {
+                      background-color: var(--bubble-button-bg);
+                  }
+                  .bubble-icon-container {
+                      background: var(--bubble-icon-container-bg);
+                  }
+
+                    .bubble-sub-button-icon {
+                      --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                    }
+
+                      .bubble-sub-button-1 {
+                      color: ${hass.states['fan.study_fan_tl'].state === 'on' ? 'white' : 'white'} !important;
+                      background-color: ${hass.states['fan.study_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
+                      font-size: 10px
+                    }
+
+                      .bubble-sub-button-2 {
+                      color: ${hass.states['light.study_lamp_tl'].state === 'on' ? 'white' : 'white'} !important;
+                      background-color: ${hass.states['light.study_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                      font-size: 10px
+                    }
+
+                show_icon: true
+                show_name: true
+                scrolling_effect: false
+                show_last_changed: false
+                show_attribute: true
+              - type: custom:bubble-card
+                card_type: button
+                button_type: name
+                sub_button:
+                  - entity: light.bathroom_lamp_tl
+                    name: Bathroom
+                    icon: mdi:lightbulb-night
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                  - entity: light.temple_light
+                    name: Temple
+                    icon: mdi:led-strip
+                    show_state: false
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    tap_action:
+                      action: toggle
+                    hold_action:
+                      action: more-info
+                    show_icon: true
+                    show_arrow: false
+                name: Upper Area
+                double_tap_action:
+                  action: none
+                hold_action:
+                  action: more-info
+                card_layout: large
+                icon: mdi:home-floor-2
+                show_state: true
+                tap_action:
+                  action: toggle
+                button_action:
+                  double_tap_action:
+                    action: none
+                  hold_action:
+                    action: more-info
+                  tap_action:
+                    action: toggle
+                styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
+                  .bubble-button-background {
+                      background-color: var(--bubble-button-bg);
+                  }
+                  .bubble-icon-container {
+                      background: var(--bubble-icon-container-bg);
+                  }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+                  .bubble-sub-button-1 {
+                    color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? '' : '#37474F'} !important;
+                    font-size: 10px
+                  }
+                  .bubble-sub-button-2 {
+                    color: ${hass.states['light.temple_light'].state === 'on' ? 'white' : 'white'} !important;
+                    background-color: ${hass.states['light.temple_light'].state === 'on' ? '#ff7800' : '#37474F'} !important;
+                    font-size: 10px
+                  }
+
+                show_icon: true
+                show_name: true
+                scrolling_effect: false
+                show_last_changed: false
+                show_attribute: true
+      - type: grid
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                icon: mdi:devices
+                primary: Devices
+                secondary: Thermostat, TV, Sonos
+                multiline_secondary: true
+                color: white
+                features_position: bottom
+                card_mod: *style_section_header
+              - type: custom:bubble-card
+                card_type: climate
+                entity: climate.living_room
+                sub_button:
+                  - name: HVAC modes menu
+                    select_attribute: hvac_modes
+                    state_background: false
+                    show_arrow: false
+                force_icon: true
+                show_state: true
+                show_last_changed: false
+                show_attribute: true
+                attribute: current_temperature
+                state_color: false
+                hide_target_temp_high: false
+                show_name: true
+                name: Thermostat
+                icon: mdi:thermostat-auto
+                card_layout: large-2-rows
+                tap_action:
+                  action: navigate
+                  navigation_path: '#pop-living-room-thermostat'
+                show_icon: true
+                double_tap_action:
+                  action: more-info
+                hold_action:
+                  action: navigate
+                  navigation_path: '#pop-living-room-thermostat'
+                styles: |-
+                  :host {
+                    --bubble-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-icon-container-black: black;
+                    --bubble-sub-icon-size: 13px;
+                  }
+                  .bubble-color-background {
+                      background-color: rgb(45, 95, 125) !important;
+                  }
+                  .bubble-icon-container {
+                      background: var(--bubble-icon-container-black);
+                  }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+              - type: custom:bubble-card
+                card_type: media-player
+                entity: media_player.samsung_q70cd_75_3
+                name: Samsung TV
+                icon: mdi:television
+                force_icon: false
+                show_last_changed: true
+                show_attribute: false
+                show_state: true
+                hide:
+                  next_button: true
+                  previous_button: true
+                  volume_button: true
+                card_layout: large-2-rows
+                styles: |-
+                  :host {
+                    --bubble-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-icon-container-black: black;
+                    --bubble-sub-icon-size: 13px;
+                  }
+                  .bubble-media-player-container {
+                      background-color: rgb(45, 95, 125) !important;
+                  }
+                  .bubble-icon-container {
+                      background: var(--bubble-icon-container-black);
+                  }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+              - type: custom:bubble-card
+                card_type: media-player
+                name: Sonos
+                icon: mdi:soundbar
+                force_icon: true
+                show_last_changed: true
+                show_state: true
+                show_attribute: true
+                attribute: is_volume_muted
+                card_layout: large-2-rows
+                cover_background: false
+                styles: |-
+                  :host {
+                    --bubble-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-icon-container-black: black;
+                    --bubble-sub-icon-size: 13px;
+                  }
+                  .bubble-media-player-container {
+                      background-color: rgb(45, 95, 125) !important;
+                  }
+                  .bubble-icon-container {
+                      background: var(--bubble-icon-container-black);
+                  }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+                entity: media_player.192_168_86_33_sonos_arc
+              - type: custom:mushroom-template-card
+                icon: mdi:battery-70
+                primary: Battery Monitoring
+                multiline_secondary: false
+                icon_color: white
+                card_mod: *style_section_header
+              - square: false
+                type: grid
+                cards:
+                  - type: tile
+                    entity: sensor.front_door_battery_2
+                    name: Front Lock
+                    vertical: true
+                    card_mod: *style_teal
+                  - type: tile
+                    entity: sensor.garden_battery
+                    name: Garden
+                    vertical: true
+                    card_mod: *style_teal
+                  - type: tile
+                    entity: sensor.garden2_battery
+                    name: Garden2
+                    vertical: true
+                    card_mod: *style_teal
+              - square: false
+                type: grid
+                cards:
+                  - type: tile
+                    entity: sensor.hemant_iphone_battery_level
+                    name: Hemant
+                    vertical: true
+                    features_position: bottom
+                    card_mod: *style_teal
+                  - type: tile
+                    entity: sensor.nupurs_iphone_battery_level
+                    name: Nupur
+                    vertical: true
+                    card_mod: *style_teal
+                  - type: tile
+                    entity: sensor.prax_iphone_battery_level
+                    name: Prax
+                    vertical: true
+                    card_mod: *style_teal
+              - square: false
+                type: grid
+                cards:
+                  - type: tile
+                    entity: sensor.myipad_battery_level
+                    name: iPad
+                    vertical: true
+                    features_position: bottom
+                    card_mod: *style_teal
+                  - type: tile
+                    entity: sensor.backyard1_smart_hose_tap_timer_battery_level
+                    name: BY1 Sprinklr
+                    vertical: true
+                    features_position: bottom
+                    card_mod: *style_teal_hidden
+                  - type: tile
+                    entity: sensor.backyard_2_smart_hose_tap_timer_battery_level
+                    name: BY 2 Sprinklr
+                    vertical: true
+                    features_position: bottom
+                    card_mod: *style_teal_hidden
+            grid_options:
+              columns: full
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: '#pop-living-room-thermostat'
+                card_mod: *style_thermostat_popup
+              - type: thermostat
+                entity: climate.living_room
+                features:
+                  - type: climate-hvac-modes
+                    hvac_modes:
+                      - heat
+                      - cool
+                      - heat_cool
+                      - 'off'
+                  - type: climate-fan-modes
+                    style: dropdown
+                  - type: climate-preset-modes
+                    style: dropdown
+                show_current_as_primary: true
+                name: Living Room Thermostat
+                card_mod: *style_thermostat_popup
+          - type: vertical-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: pop-up
+                hash: '#pop-weather-details'
+                show_header: false
+                card_mod: *style_alert_red
+              - type: custom:mushroom-template-card
+                primary: Weather Alerts
+                secondary: >
+                  {% set num_alerts = states('sensor.nws_alerts_alerts') | int 
+                  %}
+
+                  {% if num_alerts == 0 %}
+                    we do not have any weather alerts today !! 
+                  {%endif%}
+
+
+                  {% for alert_num in range(num_alerts) %}
+
+                  ---
+
+                  # NWS Alert {{ alert_num + 1 }}
+
+
+                  ## {{ state_attr('sensor.nws_alerts_alerts',
+                  'Alerts')[alert_num].Event }}
+
+                    {{ state_attr('sensor.nws_alerts_alerts', 'Alerts')[alert_num].Description }}
+                  {% endfor %}
+                multiline_secondary: true
+                tap_action:
+                  action: none
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                grid_options:
+                  columns: full
+                fill_container: true
+                card_mod: *style_alert_red_alpha
+            title: Weather Alerts
+            grid_options:
+              columns: 12
+              rows: 4
+      - type: grid
+        cards:
+          - type: custom:mushroom-template-card
+            icon: mdi:weather-partly-cloudy
+            primary: Weather
+            secondary: ''
+            multiline_secondary: false
+            color: white
+            features_position: bottom
+            card_mod: *style_section_header
+            grid_options:
+              columns: 12
+              rows: 1
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.openweathermap_wind_speed
+                line_color: blue
+                line_width: 8
+                font_size: 75
+                name: Wind Speed
+                show:
+                  labels: true
+                card_mod: *style_teal
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.airnow_air_quality_index
+                line_color: '#e74c3c'
+                line_width: 8
+                font_size: 75
+                show:
+                  labels: true
+                card_mod: *style_teal
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.home_realfeel_temperature
+                line_color: green
+                line_width: 8
+                font_size: 75
+                name: Outside Temp
+                show:
+                  labels: true
+                card_mod: *style_teal
+              - type: custom:mini-graph-card
+                entities:
+                  - sensor.home_humidity
+                line_color: '#076666'
+                line_width: 8
+                font_size: 75
+                name: Outside Humidity
+                show:
+                  labels: true
+                card_mod: *style_teal
+          - type: custom:clock-weather-card
+            entity: weather.openweathermap
+            animated_icon: true
+            forecast_rows: 10
+            sun_entity: sun.sun
+            apparent_sensor: sensor.openweathermap_feels_like_temperature
+            aqi_sensor: sensor.airnow_air_quality_index
+            hourly_forecast: false
+            card_mod: *style_teal
+          - type: custom:horizon-card
+            title: Sun & Moon
+            moon: true
+            refresh_period: 60
+            southern_flip: false
+            fields:
+              sunrise: true
+              sunset: true
+              dawn: true
+              noon: true
+              dusk: true
+              azimuth: true
+              elevation: true
+              moonrise: true
+              moonset: true
+              moon_phase: true
+            card_mod: *style_teal
+    theme: Mushroom Square Shadow
+  - title: Security
+    icon: mdi:shield-home-outline
+    subview: false
+    badges: []
+    cards: []
+    type: sections
+    max_columns: 4
+    sections:
+      - type: grid
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Ring Alarm
+                card_mod: *style_section_header
+              - states:
+                  - arm_home
+                  - arm_away
+                type: alarm-panel
+                entity: alarm_control_panel.home_alarm
+                theme: Mushroom Square Shadow
+                card_mod:
+                  style: |
+                    ha-card {
+                      --paper-input-container-shared-input-style_-_font-size: 2.5rem;
+                      --mdc-typography-button-font-size: 1.5rem;
+                      --mdc-button-outline-color: rgba(240, 240, 240, 255);
+                      --paper-font-subhead_-_font-size: 1.5rem;
+                      --mdc-shape-small: 100%;
+                      background-color: rgb(45,95,125);
+                    }
+                    mwc-button:
+                    $: | 
+                      button {
+                        --mdc-theme-primary: var(--primary-text-color) !important;
+                      }
+              - type: custom:mushroom-template-card
+                primary: CO / Smoke Alarm
+                card_mod: *style_section_header
+              - type: horizontal-stack
+                cards:
+                  - type: tile
+                    entity: binary_sensor.smoke_co_listener_37339_co
+                    name: CO
+                    state_content:
+                      - state
+                      - last_updated
+                    vertical: true
+                    card_mod: *style_teal
+                  - type: tile
+                    entity: binary_sensor.smoke_co_listener_37339_smoke
+                    name: Smoke
+                    vertical: true
+                    hide_state: false
+                    state_content:
+                      - state
+                      - last_changed
+                    card_mod: *style_teal
+              - type: custom:mushroom-template-card
+                primary: Check the Motion !!
+                card_mod: *style_section_header
+              - type: tile
+                entity: binary_sensor.motion_detector_stairs
+                name: Above Stairs
+                vertical: true
+                state_content:
+                  - state
+                  - last_changed
+                card_mod: *style_teal
+      - type: grid
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Sensors @ Entrance
+                card_mod: *style_section_header
+              - type: horizontal-stack
+                cards:
+                  - type: tile
+                    entity: binary_sensor.front_door
+                    vertical: false
+                    state_content:
+                      - state
+                      - last_changed
+                    color: teal
+                    card_mod: *style_teal
+                  - type: tile
+                    entity: binary_sensor.front_window
+                    state_content:
+                      - state
+                      - last_changed
+                    show_entity_picture: false
+                    color: teal
+                    card_mod: *style_teal
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.garage_backdoor
+                    card_mod: *style_teal
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.entry_room_side_window
+                    card_mod: *style_teal
+              - type: custom:mushroom-template-card
+                primary: Sensors for Living Room (LR) et. al.
+                card_mod: *style_section_header
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.living_room_back_window_right
+                    card_mod: *style_teal
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.living_room_back_window_left
+                    card_mod: *style_teal
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.kitchen_window
+                    card_mod: *style_teal
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.mummy_papa_room_back_window
+                    card_mod: *style_teal
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.garage_door
+                    card_mod: *style_teal
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.living_room_back_door
+                    card_mod: *style_teal
+              - type: custom:mushroom-template-card
+                primary: Upper Floor Sensors
+                card_mod: *style_section_header
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.master_bedroom_back_window_left
+                    card_mod: *style_teal
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.master_bedroom_back_window_right
+                    card_mod: *style_teal
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.study_back_window
+                    name: Study Window
+                    card_mod: *style_teal
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.upper_front_window
+                    card_mod: *style_teal
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.office_side_window
+                    name: Office Window
+                    card_mod: *style_teal
+      - type: grid
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Cameras with Live Feed
+                card_mod: *style_section_header
+              - show_state: true
+                show_name: true
+                camera_view: auto
+                type: picture-entity
+                entity: camera.172_19_0_4
+              - type: picture-entity
+                entity: camera.172_19_0_4_2
+              - show_state: true
+                show_name: true
+                camera_view: auto
+                type: picture-entity
+                entity: camera.172_19_0_4_3
+                name: Garden Camera Left
+              - show_state: true
+                show_name: true
+                camera_view: auto
+                type: picture-entity
+                entity: camera.garden2_camera
+                name: Garden Camera Right
+  - icon: mdi:devices
+    title: Devices
+    type: sections
+    badges: []
+    cards: []
+    sections:
+      - type: grid
+        cards:
+          - type: custom:mushroom-template-card
+            icon: mdi:printer-wireless
+            primary: Vacuum Cleaners
+            grid_options:
+              columns: full
+            color: white
+            features_position: bottom
+            card_mod: *style_section_header
+          - type: custom:mushroom-vacuum-card
+            entity: vacuum.kalia
+            icon_animation: true
+            fill_container: false
+            commands:
+              - start_pause
+              - on_off
+              - stop
+              - return_home
+              - locate
+            name: Kalia - 1st Floor
+            icon: mdi:robot-vacuum
+            primary_info: name
+            secondary_info: state
+            icon_type: entity-picture
+            tap_action:
+              action: more-info
+            card_mod: *style_teal
+          - type: custom:mushroom-vacuum-card
+            entity: vacuum.samba
+            icon_animation: true
+            fill_container: true
+            commands:
+              - start_pause
+              - on_off
+              - stop
+              - return_home
+              - locate
+            name: Samba - 2nd Floor
+            icon: mdi:robot-vacuum
+            primary_info: name
+            secondary_info: state
+            icon_type: entity-picture
+            tap_action:
+              action: more-info
+            card_mod: *style_teal
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                icon: mdi:printer-wireless
+                primary: HP DeskJet 3700 Series
+                icon_color: white
+                card_mod: *style_section_header
+              - type: custom:bubble-card
+                card_type: button
+                button_type: name
+                name: HP DeskJet 3700
+                icon: mdi:printer-wireless
+                sub_button:
+                  - entity: sensor.hp_deskjet_3700_series
+                    name: Status
+                    icon: mdi:printer-pos-alert
+                    show_state: true
+                    show_name: true
+                    show_attribute: false
+                    show_last_changed: false
+                    state_background: true
+                    show_background: true
+                    show_icon: true
+                  - entity: sensor.hp_deskjet_3700_series_black_ink
+                    icon: mdi:water
+                    name: Black
+                    show_state: true
+                    show_name: true
+                    show_attribute: false
+                    show_icon: true
+                    show_arrow: false
+                  - entity: sensor.hp_deskjet_3700_series_tri_color_ink
+                    show_attribute: false
+                    icon: mdi:water
+                    show_icon: true
+                    show_name: true
+                    name: Color
+                    show_state: true
+                show_state: false
+                show_icon: true
+                show_name: false
+                scrolling_effect: false
+                double_tap_action:
+                  action: more-info
+                hold_action:
+                  action: more-info
+                tap_action:
+                  action: more-info
+                button_action:
+                  double_tap_action:
+                    action: more-info
+                  hold_action:
+                    action: more-info
+                  tap_action:
+                    action: more-info
+                styles: |
+                  :host {
+                    --bubble-button-border-radius: 7px;
+                    --bubble-sub-button-border-radius: 7px;
+                    --bubble-sub-icon-size: 13px;
+                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
+                    --bubble-icon-container-bg: #0F2C64;
+                  }
+                  .bubble-button-background {
+                      background-color: var(--bubble-button-bg);
+                  }
+                  .bubble-icon-container {
+                      background: var(--bubble-icon-container-bg);
+                  }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+                  .bubble-sub-button-1 {
+                    background-color:  '#37474F'} !important;
+                    font-size: 12px
+                  }  
+                  .bubble-sub-button-2 {
+                    background-color:  '#37474F'} !important;
+                    font-size: 12px
+                  }  
+                  .bubble-sub-button-3 {
+                  background-color:  '#37474F'} !important;
+                  font-size: 12px
+                  }
+
+          - type: custom:mushroom-template-card
+            icon: mdi:printer-wireless
+            primary: Google Nest Wifi Pro Router
+            icon_color: white
+            card_mod: *style_section_header
+            fill_container: true
+            grid_options:
+              columns: full
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: sensor.onhub_wan_status
+                name: WAN Status
+                icon: mdi:wifi
+                fill_container: false
+                card_mod: *style_teal
+              - type: custom:mushroom-entity-card
+                entity: sensor.google_wifi_status
+                name: Wifi Status
+                card_mod: *style_teal
+              - graph: line
+                type: sensor
+                entity: sensor.onhub_packet_upload_speed
+                name: Upload Speed
+                detail: 2
+                hours_to_show: 48
+                card_mod: *style_teal
+              - graph: line
+                type: sensor
+                entity: sensor.onhub_packet_download_speed
+                name: Download Speed
+                detail: 2
+                hours_to_show: 40
+                card_mod: *style_teal
+              - type: custom:mushroom-entity-card
+                entity: sensor.onhub_external_ip
+                name: External IP
+                card_mod: *style_teal
+              - type: custom:mushroom-entity-card
+                entity: sensor.google_wifi_uptime
+                name: Up Time
+                card_mod: *style_teal
+            columns: 2
+          - type: sensor
+            entity: sensor.google_wifi_last_restart
+            name: Last Restart
+            detail: 2
+            hours_to_show: 48
+            grid_options:
+              columns: full
+            card_mod: *style_teal
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                icon: phu:sprinkler
+                primary: Sprinklers
+                color: white
+                features_position: bottom
+                card_mod: *style_section_header_hidden
+              - square: false
+                type: grid
+                cards:
+                  - type: tile
+                    entity: switch.backyard1_zone_zone
+                    features_position: bottom
+                    vertical: false
+                    card_mod: *style_teal_hidden
+                  - type: tile
+                    entity: switch.backyard_2_sprinklr_zone_zone
+                    features_position: bottom
+                    vertical: false
+                    card_mod: *style_teal_hidden
+                columns: 2
+      - type: grid
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  title: Unavailable Sensors
+                  show_header_toggle: false
+                  state_color: true
+                filter:
+                  include:
+                    - domain: sensor
+                      state: unavailable
+                sort:
+                  method: name
+                  reverse: false
+                show_empty: false
+                card_param: entities
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  title: Unavailable Lights
+                  show_header_toggle: false
+                  state_color: true
+                filter:
+                  include:
+                    - domain: light
+                      state: unavailable
+                sort:
+                  method: name
+                  reverse: false
+                show_empty: false
+                card_param: entities
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  title: Unavailable Switches
+                  show_header_toggle: false
+                  state_color: true
+                filter:
+                  include:
+                    - domain: switch
+                      state: unavailable
+                sort:
+                  method: name
+                  reverse: false
+                show_empty: false
+                card_param: entities
+          - type: custom:auto-entities
+            card:
+              type: entities
+              title: Open Doors & Windows
+              show_header_toggle: false
+            filter:
+              include:
+                - domain: binary_sensor
+                  attributes:
+                    device_class: window
+                  state: 'on'
+                - domain: binary_sensor
+                  attributes:
+                    device_class: door
+                  state: 'on'
+            sort:
+              method: name
+              ignore_case: true
+            state_color: true
+            secondary_info: last-changed
+  - type: sections
+    max_columns: 3
+    path: watchtower
+    icon: mdi:binoculars
+    theme: Mushroom Square Shadow
+    sections:
+      - type: grid
+        cards:
+          - icon: phu:intel-cpu
+            type: custom:mushroom-template-card
+            primary: Weather Charts !!
+            multiline_secondary: false
+            icon_color: white
+            secondary: ''
+            card_mod: *style_section_header
+            grid_options:
+              columns: full
+          - type: custom:apexcharts-card
+            graph_span: 3d
+            span:
+              end: day
+            header:
+              show: true
+              title: Temperature
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.openweathermap_feels_like_temperature
+                name: Outside Temperature
+              - entity: sensor.living_room_temperature
+            card_mod: *style_teal
+          - type: custom:apexcharts-card
+            graph_span: 3d
+            span:
+              end: day
+            header:
+              show: true
+              title: Humidity Charts
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.openweathermap_humidity
+                name: Outside Humidity
+              - entity: sensor.living_room_humidity
+            card_mod: *style_teal
+      - type: grid
+        cards:
+          - icon: phu:intel-cpu
+            type: custom:mushroom-template-card
+            primary: Hardware
+            multiline_secondary: false
+            icon_color: white
+            secondary: ''
+            card_mod: *style_section_header
+            grid_options:
+              columns: full
+          - graph: line
+            type: sensor
+            detail: 2
+            entity: sensor.system_monitor_memory_use_percent
+            name: Memory
+            hours_to_show: 48
+            card_mod: *style_teal
+          - graph: line
+            type: sensor
+            entity: sensor.system_monitor_processor_use
+            detail: 2
+            name: CPU
+            hours_to_show: 48
+            card_mod: *style_teal
+          - graph: line
+            type: sensor
+            detail: 2
+            entity: sensor.system_monitor_processor_temperature
+            hours_to_show: 48
+            name: CPU Temp
+            card_mod: *style_teal
+          - graph: line
+            type: sensor
+            entity: sensor.system_monitor_disk_use_percent
+            detail: 2
+            hours_to_show: 48
+            name: Disk Usage
+            card_mod: *style_teal
+          - graph: none
+            type: sensor
+            detail: 2
+            entity: sensor.system_monitor_last_boot
+            name: Last Boot
+            grid_options:
+              columns: full
+            card_mod: *style_teal
+      - type: grid
+        cards:
+          - icon: mdi:weather-pouring
+            type: custom:mushroom-template-card
+            primary: Air Pollution Data
+            multiline_secondary: false
+            secondary: ''
+            grid_options:
+              columns: full
+            color: white
+            features_position: bottom
+            card_mod: *style_section_header
+          - type: vertical-stack
+            cards:
+              - type: gauge
+                entity: sensor.openweathermap_pm2_5
+                name: PM 2.5
+                unit: µg/m³
+                min: 0
+                max: 200
+                segments:
+                  - from: 0
+                    color: '#00e400'
+                  - from: 12.1
+                    color: '#ffff00'
+                  - from: 35.5
+                    color: '#ff7e00'
+                  - from: 55.5
+                    color: '#ff0000'
+                  - from: 150.5
+                    color: '#8f3f97'
+                  - from: 250.5
+                    color: '#7e0023'
+              - type: gauge
+                entity: sensor.openweathermap_pm10
+                name: PM 10
+                unit: µg/m³
+                min: 0
+                max: 200
+                segments:
+                  - from: 0
+                    color: '#00e400'
+                  - from: 55
+                    color: '#ffff00'
+                  - from: 155
+                    color: '#ff7e00'
+                  - from: 255
+                    color: '#ff0000'
+                  - from: 355
+                    color: '#8f3f97'
+                  - from: 425
+                    color: '#7e0023'
+              - type: gauge
+                entity: sensor.openweathermap_carbon_monoxide
+                name: Carbon Monoxide (CO)
+                unit: µg/m³
+                min: 0
+                max: 10000
+                segments:
+                  - from: 0
+                    color: '#00e400'
+                  - from: 4900
+                    color: '#ffff00'
+                  - from: 9400
+                    color: '#ff7e00'
+                  - from: 12400
+                    color: '#ff0000'
+              - type: gauge
+                entity: sensor.openweathermap_sulphur_dioxide
+                name: Sulphur Dioxide (SO₂)
+                unit: µg/m³
+                min: 0
+                max: 300
+                segments:
+                  - from: 0
+                    color: '#00e400'
+                  - from: 81
+                    color: '#ffff00'
+                  - from: 181
+                    color: '#ff7e00'
+                  - from: 305
+                    color: '#ff0000'
+              - type: gauge
+                entity: sensor.openweathermap_nitrogen_monoxide
+                name: Nitrogen Monoxide (NO)
+                unit: µg/m³
+                min: 0
+                max: 200
+                segments:
+                  - from: 0
+                    color: '#00e400'
+                  - from: 50
+                    color: '#ffff00'
+                  - from: 100
+                    color: '#ff7e00'
+                  - from: 150
+                    color: '#ff0000'
+                  - from: 200
+                    color: '#8f3f97'
+              - type: gauge
+                entity: sensor.openweathermap_nitrogen_dioxide
+                name: Nitrogen Dioxide (NO₂)
+                unit: µg/m³
+                min: 0
+                max: 400
+                segments:
+                  - from: 0
+                    color: '#00e400'
+                  - from: 41
+                    color: '#ffff00'
+                  - from: 81
+                    color: '#ff7e00'
+                  - from: 121
+                    color: '#ff0000'
+                  - from: 201
+                    color: '#8f3f97'
+                  - from: 401
+                    color: '#7e0023'
+              - type: gauge
+                entity: sensor.openweathermap_ozone
+                name: Ozone (O₃)
+                unit: µg/m³
+                min: 0
+                max: 200
+                segments:
+                  - from: 0
+                    color: '#00e400'
+                  - from: 61
+                    color: '#ffff00'
+                  - from: 121
+                    color: '#ff7e00'
+                  - from: 169
+                    color: '#ff0000'
+                  - from: 217
+                    color: '#8f3f97'
+                  - from: 405
+                    color: '#7e0023'
+    cards: []
+  - title: Extras
+    icon: mdi:minus-box
+    badges: []
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Persona
+            icon: mdi:account-group
+            color: white
+            features_position: bottom
+            card_mod: *style_section_header
+            grid_options:
+              columns: full
+          - type: vertical-stack
+            cards:
+              - type: custom:stack-in-card
+                mode: horizontal
+                card_mod: *style_teal
+                cards:
+                  - type: custom:mushroom-person-card
+                    entity: person.hemant_virmani
+                    use_entity_picture: true
+                    hide_name: false
+                    layout: default
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        command: popup
+                        deviceID: this
+                        title: Hemant Virmani
+                        card:
+                          type: custom:mod-card
+                          style: |
+                            ha-card {
+                               padding-right: 15px;
+                               padding-left: 15px;
+                               padding-bottom: 15px;     
+                            }
+                          card:
+                            type: vertical-stack
+                            cards:
+                              - type: custom:mushroom-entity-card
+                                entity: sensor.hemant_iphone_geocoded_location
+                                primary_info: none
+                                icon: mdi:map-marker
+                                icon_color: yellow
+                  - type: custom:mushroom-chips-card
+                    style: |
+                      ha-card {
+                        --chip-box-shadow: none;
+                        --chip-background: none;
+                        --chip-spacing: none;
+                        --chip-height: 33px
+                      }
+                    chips:
+                      - type: template
+                        entity: sensor.hemant_iphone_battery_state
+                        icon_color: |2-
+                                    {% set state=states(entity) %}
+                                    {% if state=='Charging' %}
+                                    green
+                                    {% elif state=='Not Charging' %}
+                                    #6f6f6f
+                                   {% endif %}
+                        content: '{{ states(entity) }}'
+                        icon: mdi:power-plug
+                        tap_action:
+                          action: more-info
+                      - type: template
+                        entity: sensor.hemant_iphone_battery_level
+                        content: '{{ states(entity) }} %'
+                        icon: |2
+                                    {% set bl = states(entity) | int %}
+                                    {% if bl < 10 %} mdi:battery-outline
+                                    {% elif bl < 20 %} mdi:battery-10
+                                    {% elif bl < 30 %} mdi:battery-20
+                                    {% elif bl < 40 %} mdi:battery-30
+                                    {% elif bl < 50 %} mdi:battery-40
+                                    {% elif bl < 60 %} mdi:battery-50
+                                    {% elif bl < 70 %} mdi:battery-60
+                                    {% elif bl < 80 %} mdi:battery-70
+                                    {% elif bl < 90 %} mdi:battery-80
+                                    {% elif bl < 100 %} mdi:battery-90
+                                    {% elif bl == 100 %} mdi:battery
+                                    {% else %} mdi:battery-unknown
+                                    {% endif %}
+                        icon_color: |2-
+                                    {% set bl = states(entity) | int %}
+                                    {% if bl < 10 %} red
+                                    {% elif bl < 20 %} #ff4500
+                                    {% elif bl < 30 %} orange
+                                    {% elif bl < 40 %} #ffb100
+                                    {% elif bl < 50 %} #ffd7100
+                                    {% elif bl < 60 %} yellow
+                                    {% elif bl < 70 %} #adff2f
+                                    {% elif bl < 80 %} #32cd32
+                                    {% elif bl < 90 %} green
+                                    {% elif bl < 100 %} green
+                                    {% elif bl == 100 %} green
+                                    {% else %} grey
+                                    {% endif %}
+                        tap_action:
+                          action: more-info
+                      - type: entity
+                        icon_color: yellow
+                        entity: sensor.hemant_iphone_steps
+                      - type: entity
+                        icon_color: yellow
+                        entity: sensor.hemant_iphone_distance
+                      - type: entity
+                        icon_color: blue
+                        entity: sensor.hemant_iphone_connection_type
+                      - type: entity
+                        icon_color: blue
+                        entity: sensor.hemant_iphone_ssid
+                    alignment: justify
+              - type: custom:stack-in-card
+                mode: horizontal
+                card_mod: *style_teal
+                cards:
+                  - type: custom:mushroom-person-card
+                    entity: person.nupur
+                    use_entity_picture: true
+                    hide_name: false
+                    layout: default
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        command: popup
+                        deviceID: this
+                        title: Nupur Virmani
+                        card:
+                          type: custom:mod-card
+                          style: |
+                            ha-card {
+                               padding-right: 15px;
+                               padding-left: 15px;
+                               padding-bottom: 15px;     
+                            }
+                          card:
+                            type: vertical-stack
+                            cards:
+                              - type: custom:mushroom-entity-card
+                                entity: sensor.nupurs_iphone_geocoded_location
+                                primary_info: none
+                                icon: mdi:map-marker
+                                icon_color: yellow
+                  - type: custom:mushroom-chips-card
+                    style: |
+                      ha-card {
+                        --chip-box-shadow: none;
+                        --chip-background: none;
+                        --chip-spacing: none;
+                        --chip-height: 33px
+                      }
+                    chips:
+                      - type: template
+                        entity: sensor.nupurs_iphone_battery_state
+                        icon_color: |2-
+                                    {% set state=states(entity) %}
+                                    {% if state=='Charging' %}
+                                    green
+                                    {% elif state=='Not Charging' %}
+                                    #6f6f6f
+                                   {% endif %}
+                        content: '{{ states(entity) }}'
+                        icon: mdi:power-plug
+                        tap_action:
+                          action: more-info
+                      - type: template
+                        entity: sensor.nupurs_iphone_battery_level
+                        content: '{{ states(entity) }} %'
+                        icon: |2
+                                    {% set bl = states(entity) | int %}
+                                    {% if bl < 10 %} mdi:battery-outline
+                                    {% elif bl < 20 %} mdi:battery-10
+                                    {% elif bl < 30 %} mdi:battery-20
+                                    {% elif bl < 40 %} mdi:battery-30
+                                    {% elif bl < 50 %} mdi:battery-40
+                                    {% elif bl < 60 %} mdi:battery-50
+                                    {% elif bl < 70 %} mdi:battery-60
+                                    {% elif bl < 80 %} mdi:battery-70
+                                    {% elif bl < 90 %} mdi:battery-80
+                                    {% elif bl < 100 %} mdi:battery-90
+                                    {% elif bl == 100 %} mdi:battery
+                                    {% else %} mdi:battery-unknown
+                                    {% endif %}
+                        icon_color: |2-
+                                    {% set bl = states(entity) | int %}
+                                    {% if bl < 10 %} red
+                                    {% elif bl < 20 %} #ff4500
+                                    {% elif bl < 30 %} orange
+                                    {% elif bl < 40 %} #ffb100
+                                    {% elif bl < 50 %} #ffd7100
+                                    {% elif bl < 60 %} yellow
+                                    {% elif bl < 70 %} #adff2f
+                                    {% elif bl < 80 %} #32cd32
+                                    {% elif bl < 90 %} green
+                                    {% elif bl < 100 %} green
+                                    {% elif bl == 100 %} green
+                                    {% else %} grey
+                                    {% endif %}
+                        tap_action:
+                          action: more-info
+                      - type: entity
+                        icon_color: yellow
+                        entity: sensor.nupurs_iphone_steps
+                      - type: entity
+                        icon_color: yellow
+                        entity: sensor.nupur_iphone_distance
+                      - type: entity
+                        icon_color: blue
+                        entity: sensor.nupurs_iphone_connection_type
+                      - type: entity
+                        icon_color: blue
+                        entity: sensor.nupurs_iphone_ssid
+                    alignment: justify
+              - type: custom:stack-in-card
+                mode: horizontal
+                card_mod: *style_teal
+                cards:
+                  - type: custom:mushroom-person-card
+                    entity: person.prax
+                    use_entity_picture: true
+                    hide_name: false
+                    layout: default
+                    tap_action:
+                      action: fire-dom-event
+                      browser_mod:
+                        command: popup
+                        deviceID: this
+                        title: Prakriti Virmani
+                        card:
+                          type: custom:mod-card
+                          style: |
+                            ha-card {
+                               padding-right: 15px;
+                               padding-left: 15px;
+                               padding-bottom: 15px;     
+                            }
+                          card:
+                            type: vertical-stack
+                            cards:
+                              - type: custom:mushroom-entity-card
+                                entity: sensor.prax_iphone_geocoded_location
+                                primary_info: none
+                                icon: mdi:map-marker
+                                icon_color: yellow
+                  - type: custom:mushroom-chips-card
+                    style: |
+                      ha-card {
+                        --chip-box-shadow: none;
+                        --chip-background: none;
+                        --chip-spacing: none;
+                        --chip-height: 33px
+                      }
+                    chips:
+                      - type: template
+                        entity: sensor.prax_iphone_battery_state
+                        icon_color: |2-
+                                    {% set state=states(entity) %}
+                                    {% if state=='Charging' %}
+                                    green
+                                    {% elif state=='Not Charging' %}
+                                    #6f6f6f
+                                   {% endif %}
+                        content: '{{ states(entity) }}'
+                        icon: mdi:power-plug
+                        tap_action:
+                          action: more-info
+                      - type: template
+                        entity: sensor.prax_iphone_battery_level
+                        content: '{{ states(entity) }} %'
+                        icon: |2
+                                    {% set bl = states(entity) | int %}
+                                    {% if bl < 10 %} mdi:battery-outline
+                                    {% elif bl < 20 %} mdi:battery-10
+                                    {% elif bl < 30 %} mdi:battery-20
+                                    {% elif bl < 40 %} mdi:battery-30
+                                    {% elif bl < 50 %} mdi:battery-40
+                                    {% elif bl < 60 %} mdi:battery-50
+                                    {% elif bl < 70 %} mdi:battery-60
+                                    {% elif bl < 80 %} mdi:battery-70
+                                    {% elif bl < 90 %} mdi:battery-80
+                                    {% elif bl < 100 %} mdi:battery-90
+                                    {% elif bl == 100 %} mdi:battery
+                                    {% else %} mdi:battery-unknown
+                                    {% endif %}
+                        icon_color: |2-
+                                    {% set bl = states(entity) | int %}
+                                    {% if bl < 10 %} red
+                                    {% elif bl < 20 %} #ff4500
+                                    {% elif bl < 30 %} orange
+                                    {% elif bl < 40 %} #ffb100
+                                    {% elif bl < 50 %} #ffd7100
+                                    {% elif bl < 60 %} yellow
+                                    {% elif bl < 70 %} #adff2f
+                                    {% elif bl < 80 %} #32cd32
+                                    {% elif bl < 90 %} green
+                                    {% elif bl < 100 %} green
+                                    {% elif bl == 100 %} green
+                                    {% else %} grey
+                                    {% endif %}
+                        tap_action:
+                          action: more-info
+                      - type: entity
+                        icon_color: yellow
+                        entity: sensor.prax_iphone_steps
+                      - type: entity
+                        icon_color: yellow
+                        entity: sensor.prax_iphone_distance
+                      - type: entity
+                        icon_color: blue
+                        entity: sensor.prax_iphone_connection_type
+                      - type: entity
+                        icon_color: blue
+                        entity: sensor.prax_iphone_ssid
+                    alignment: justify
