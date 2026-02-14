@@ -1761,36 +1761,29 @@ views:
                       - type: template
                         entity: sensor.hemant_iphone_battery_level
                         content: '{{ states(entity) }} %'
-                        icon: |2
-                                    {% set bl = states(entity) | int %}
-                                    {% if bl < 10 %} mdi:battery-outline
-                                    {% elif bl < 20 %} mdi:battery-10
-                                    {% elif bl < 30 %} mdi:battery-20
-                                    {% elif bl < 40 %} mdi:battery-30
-                                    {% elif bl < 50 %} mdi:battery-40
-                                    {% elif bl < 60 %} mdi:battery-50
-                                    {% elif bl < 70 %} mdi:battery-60
-                                    {% elif bl < 80 %} mdi:battery-70
-                                    {% elif bl < 90 %} mdi:battery-80
-                                    {% elif bl < 100 %} mdi:battery-90
-                                    {% elif bl == 100 %} mdi:battery
-                                    {% else %} mdi:battery-unknown
-                                    {% endif %}
-                        icon_color: |2-
-                                    {% set bl = states(entity) | int %}
-                                    {% if bl < 10 %} red
-                                    {% elif bl < 20 %} #ff4500
-                                    {% elif bl < 30 %} orange
-                                    {% elif bl < 40 %} #ffb100
-                                    {% elif bl < 50 %} #ffd7100
-                                    {% elif bl < 60 %} yellow
-                                    {% elif bl < 70 %} #adff2f
-                                    {% elif bl < 80 %} #32cd32
-                                    {% elif bl < 90 %} green
-                                    {% elif bl < 100 %} green
-                                    {% elif bl == 100 %} green
-                                    {% else %} grey
-                                    {% endif %}
+                        icon: >-
+                          {% set bl = states(entity) | int %}
+                          {{ iif(bl >= 100, 'mdi:battery',
+                             iif(bl >= 90, 'mdi:battery-90',
+                             iif(bl >= 80, 'mdi:battery-80',
+                             iif(bl >= 70, 'mdi:battery-70',
+                             iif(bl >= 60, 'mdi:battery-60',
+                             iif(bl >= 50, 'mdi:battery-50',
+                             iif(bl >= 40, 'mdi:battery-40',
+                             iif(bl >= 30, 'mdi:battery-30',
+                             iif(bl >= 20, 'mdi:battery-20',
+                             iif(bl >= 10, 'mdi:battery-10',
+                             'mdi:battery-outline'))))))))))) }}
+                        icon_color: >-
+                          {% set bl = states(entity) | int %}
+                          {{ iif(bl < 10, 'red',
+                             iif(bl < 20, '#ff4500',
+                             iif(bl < 30, 'orange',
+                             iif(bl < 40, '#ffb100',
+                             iif(bl < 50, '#ffd7100',
+                             iif(bl < 60, 'yellow',
+                             iif(bl < 70, '#adff2f',
+                             iif(bl < 80, '#32cd32', 'green')))))))) }}
                         tap_action:
                           action: more-info
                       - type: entity
@@ -1862,36 +1855,29 @@ views:
                       - type: template
                         entity: sensor.nupurs_iphone_battery_level
                         content: '{{ states(entity) }} %'
-                        icon: |2
-                                    {% set bl = states(entity) | int %}
-                                    {% if bl < 10 %} mdi:battery-outline
-                                    {% elif bl < 20 %} mdi:battery-10
-                                    {% elif bl < 30 %} mdi:battery-20
-                                    {% elif bl < 40 %} mdi:battery-30
-                                    {% elif bl < 50 %} mdi:battery-40
-                                    {% elif bl < 60 %} mdi:battery-50
-                                    {% elif bl < 70 %} mdi:battery-60
-                                    {% elif bl < 80 %} mdi:battery-70
-                                    {% elif bl < 90 %} mdi:battery-80
-                                    {% elif bl < 100 %} mdi:battery-90
-                                    {% elif bl == 100 %} mdi:battery
-                                    {% else %} mdi:battery-unknown
-                                    {% endif %}
-                        icon_color: |2-
-                                    {% set bl = states(entity) | int %}
-                                    {% if bl < 10 %} red
-                                    {% elif bl < 20 %} #ff4500
-                                    {% elif bl < 30 %} orange
-                                    {% elif bl < 40 %} #ffb100
-                                    {% elif bl < 50 %} #ffd7100
-                                    {% elif bl < 60 %} yellow
-                                    {% elif bl < 70 %} #adff2f
-                                    {% elif bl < 80 %} #32cd32
-                                    {% elif bl < 90 %} green
-                                    {% elif bl < 100 %} green
-                                    {% elif bl == 100 %} green
-                                    {% else %} grey
-                                    {% endif %}
+                        icon: >-
+                          {% set bl = states(entity) | int %}
+                          {{ iif(bl >= 100, 'mdi:battery',
+                             iif(bl >= 90, 'mdi:battery-90',
+                             iif(bl >= 80, 'mdi:battery-80',
+                             iif(bl >= 70, 'mdi:battery-70',
+                             iif(bl >= 60, 'mdi:battery-60',
+                             iif(bl >= 50, 'mdi:battery-50',
+                             iif(bl >= 40, 'mdi:battery-40',
+                             iif(bl >= 30, 'mdi:battery-30',
+                             iif(bl >= 20, 'mdi:battery-20',
+                             iif(bl >= 10, 'mdi:battery-10',
+                             'mdi:battery-outline'))))))))))) }}
+                        icon_color: >-
+                          {% set bl = states(entity) | int %}
+                          {{ iif(bl < 10, 'red',
+                             iif(bl < 20, '#ff4500',
+                             iif(bl < 30, 'orange',
+                             iif(bl < 40, '#ffb100',
+                             iif(bl < 50, '#ffd7100',
+                             iif(bl < 60, 'yellow',
+                             iif(bl < 70, '#adff2f',
+                             iif(bl < 80, '#32cd32', 'green')))))))) }}
                         tap_action:
                           action: more-info
                       - type: entity
@@ -1963,36 +1949,29 @@ views:
                       - type: template
                         entity: sensor.prax_iphone_battery_level
                         content: '{{ states(entity) }} %'
-                        icon: |2
-                                    {% set bl = states(entity) | int %}
-                                    {% if bl < 10 %} mdi:battery-outline
-                                    {% elif bl < 20 %} mdi:battery-10
-                                    {% elif bl < 30 %} mdi:battery-20
-                                    {% elif bl < 40 %} mdi:battery-30
-                                    {% elif bl < 50 %} mdi:battery-40
-                                    {% elif bl < 60 %} mdi:battery-50
-                                    {% elif bl < 70 %} mdi:battery-60
-                                    {% elif bl < 80 %} mdi:battery-70
-                                    {% elif bl < 90 %} mdi:battery-80
-                                    {% elif bl < 100 %} mdi:battery-90
-                                    {% elif bl == 100 %} mdi:battery
-                                    {% else %} mdi:battery-unknown
-                                    {% endif %}
-                        icon_color: |2-
-                                    {% set bl = states(entity) | int %}
-                                    {% if bl < 10 %} red
-                                    {% elif bl < 20 %} #ff4500
-                                    {% elif bl < 30 %} orange
-                                    {% elif bl < 40 %} #ffb100
-                                    {% elif bl < 50 %} #ffd7100
-                                    {% elif bl < 60 %} yellow
-                                    {% elif bl < 70 %} #adff2f
-                                    {% elif bl < 80 %} #32cd32
-                                    {% elif bl < 90 %} green
-                                    {% elif bl < 100 %} green
-                                    {% elif bl == 100 %} green
-                                    {% else %} grey
-                                    {% endif %}
+                        icon: >-
+                          {% set bl = states(entity) | int %}
+                          {{ iif(bl >= 100, 'mdi:battery',
+                             iif(bl >= 90, 'mdi:battery-90',
+                             iif(bl >= 80, 'mdi:battery-80',
+                             iif(bl >= 70, 'mdi:battery-70',
+                             iif(bl >= 60, 'mdi:battery-60',
+                             iif(bl >= 50, 'mdi:battery-50',
+                             iif(bl >= 40, 'mdi:battery-40',
+                             iif(bl >= 30, 'mdi:battery-30',
+                             iif(bl >= 20, 'mdi:battery-20',
+                             iif(bl >= 10, 'mdi:battery-10',
+                             'mdi:battery-outline'))))))))))) }}
+                        icon_color: >-
+                          {% set bl = states(entity) | int %}
+                          {{ iif(bl < 10, 'red',
+                             iif(bl < 20, '#ff4500',
+                             iif(bl < 30, 'orange',
+                             iif(bl < 40, '#ffb100',
+                             iif(bl < 50, '#ffd7100',
+                             iif(bl < 60, 'yellow',
+                             iif(bl < 70, '#adff2f',
+                             iif(bl < 80, '#32cd32', 'green')))))))) }}
                         tap_action:
                           action: more-info
                       - type: entity
