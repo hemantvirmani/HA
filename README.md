@@ -33,6 +33,7 @@ Home Assistant Lovelace dashboard configuration managed in YAML mode.
 4. Verify in Home Assistant UI
 5. Tag checkpoint: `git tag -a dashboard-vN -m "description"`
 6. If deploying live: `git tag -a live-vN -m "description"`
+7. Push all tags to remote: `git push origin --tags`
 
 ## 🚀 Quick Deploy
 
