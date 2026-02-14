@@ -18,6 +18,11 @@ My Dashboard Theme:
   bubble-button-bg: rgba(52, 152, 220, 0.95)
   bubble-icon-container-bg: "#0F2C64"
   bubble-icon-container-black: black
+  # ── Sub-button colors ──
+  bubble-sub-button-on-color: "#FF8000"
+  bubble-sub-button-off-color: "#37474F"
+  bubble-sub-button-text-color: white
+  bubble-sub-button-font-size: 10px
   modes:
     light: {}
     dark: {}

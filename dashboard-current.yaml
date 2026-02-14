@@ -196,19 +196,19 @@ views:
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: white !important;
-                    background-color: ${hass.states['light.main_door_ceiling_light_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.main_door_ceiling_light_tl'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-2 {
-                    color: white !important;
-                    background-color: ${hass.states['lock.front_door'].state === 'locked' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['lock.front_door'].state === 'locked' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-3 {
-                    color: white !important;
-                    background-color: ${hass.states['light.garage_back_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.garage_back_light'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
 
                 show_icon: true
@@ -279,14 +279,14 @@ views:
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: white !important;
-                    background-color: ${hass.states['light.front_string_lights'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.front_string_lights'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-2 {
-                    color: white !important;
-                    background-color: ${hass.states['light.entry_string_lights'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.entry_string_lights'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
 
                 show_icon: true
@@ -371,19 +371,19 @@ views:
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: white !important;
-                    background-color: ${hass.states['light.living_room_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.living_room_lamp_tl'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-2 {
-                    color: white !important;
-                    background-color: ${hass.states['light.living_room_lamp_2_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.living_room_lamp_2_tl'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-3 {
-                    color: white !important;
-                    background-color: ${hass.states['light.living_room_string_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.living_room_string_light'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
 
                 show_icon: true
@@ -474,19 +474,19 @@ views:
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: white !important;
-                    background-color: ${hass.states['light.king_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.king_lamp_lt'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-2 {
-                    color: white !important;
-                    background-color: ${hass.states['light.queen_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.queen_lamp_lt'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-3 {
-                    color: white !important;
-                    background-color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? '' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
 
                 show_icon: true
@@ -547,14 +547,14 @@ views:
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: white !important;
-                    background-color: ${hass.states['fan.study_fan_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['fan.study_fan_tl'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-2 {
-                    color: white !important;
-                    background-color: ${hass.states['light.study_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.study_lamp_tl'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
 
                 show_icon: true
@@ -624,14 +624,14 @@ views:
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: white !important;
-                    background-color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-2 {
-                    color: white !important;
-                    background-color: ${hass.states['light.temple_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px;
+                    color: var(--bubble-sub-button-text-color) !important;
+                    background-color: ${hass.states['light.temple_light'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
 
                 show_icon: true
@@ -1256,16 +1256,16 @@ views:
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    background-color: #37474F !important;
-                    font-size: 10px;
+                    background-color: var(--bubble-sub-button-off-color) !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-2 {
-                    background-color: #37474F !important;
-                    font-size: 10px;
+                    background-color: var(--bubble-sub-button-off-color) !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
                   .bubble-sub-button-3 {
-                    background-color: #37474F !important;
-                    font-size: 10px;
+                    background-color: var(--bubble-sub-button-off-color) !important;
+                    font-size: var(--bubble-sub-button-font-size);
                   }
 
           - type: custom:mushroom-template-card
