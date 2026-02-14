@@ -1,0 +1,23 @@
+My Dashboard Theme:
+  # ── Mushroom Square Shadow base ──
+  ha-badge-border-radius: 6px
+  ha-card-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.16)
+  ha-card-border-width: 0
+  ha-card-border-radius: 6px
+  ha-card-features-border-radius: 6px
+  ha-tile-icon-border-radius: 6px
+  mush-spacing: 8px
+  mush-icon-border-radius: 6px
+  mush-control-border-radius: 6px
+  mush-chip-border-radius: 6px
+  # ── Bubble Card defaults ──
+  bubble-button-border-radius: 7px
+  bubble-sub-button-border-radius: 7px
+  bubble-sub-icon-size: 13px
+  bubble-border-radius: 7px
+  bubble-button-bg: rgba(52, 152, 220, 0.95)
+  bubble-icon-container-bg: "#0F2C64"
+  bubble-icon-container-black: black
+  modes:
+    light: {}
+    dark: {}

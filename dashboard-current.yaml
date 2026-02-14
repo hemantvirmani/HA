@@ -28,12 +28,6 @@ _styles:
       ha-card { background-color: rgba(220, 53, 69, 0.95); }
   # Bubble card styles (string anchors for the 'styles:' property)
   bubble_media_player: &style_bubble_media |-
-    :host {
-      --bubble-border-radius: 7px;
-      --bubble-sub-button-border-radius: 7px;
-      --bubble-icon-container-black: black;
-      --bubble-sub-icon-size: 13px;
-    }
     .bubble-media-player-container {
       background-color: rgb(45, 95, 125) !important;
     }
@@ -65,6 +59,7 @@ views:
     badges: []
     cards: []
     type: sections
+    theme: My Dashboard Theme
     max_columns: 4
     sections:
       - type: grid
@@ -191,13 +186,6 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-sub-icon-size: 13px;
-                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
-                    --bubble-icon-container-bg: #0F2C64;
-                  }
                   .bubble-button-background {
                     background-color: var(--bubble-button-bg);
                   }
@@ -281,13 +269,6 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-sub-icon-size: 13px;
-                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
-                    --bubble-icon-container-bg: #0F2C64;
-                  }
                   .bubble-button-background {
                     background-color: var(--bubble-button-bg);
                   }
@@ -307,7 +288,6 @@ views:
                     background-color: ${hass.states['light.entry_string_lights'].state === 'on' ? '#FF8000' : '#37474F'} !important;
                     font-size: 10px;
                   }
-
 
                 show_icon: true
                 show_name: false
@@ -381,13 +361,6 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-sub-icon-size: 13px;
-                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
-                    --bubble-icon-container-bg: #0F2C64;
-                  }
                   .bubble-button-background {
                     background-color: var(--bubble-button-bg);
                   }
@@ -491,15 +464,8 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-sub-icon-size: 13px;
-                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
-                    --bubble-icon-container-bg: #0F2C64;
-                  }
                   .bubble-button-background {
-                      background-color: var(--bubble-button-bg);
+                    background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
                     background: var(--bubble-icon-container-bg);
@@ -571,13 +537,6 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-sub-icon-size: 13px;
-                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
-                    --bubble-icon-container-bg: #0F2C64;
-                  }
                   .bubble-button-background {
                     background-color: var(--bubble-button-bg);
                   }
@@ -589,7 +548,7 @@ views:
                   }
                   .bubble-sub-button-1 {
                     color: white !important;
-                    background-color: ${hass.states['fan.study_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
+                    background-color: ${hass.states['fan.study_fan_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
                     font-size: 10px;
                   }
                   .bubble-sub-button-2 {
@@ -655,13 +614,6 @@ views:
                   tap_action:
                     action: toggle
                 styles: |
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-sub-icon-size: 13px;
-                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
-                    --bubble-icon-container-bg: #0F2C64;
-                  }
                   .bubble-button-background {
                     background-color: var(--bubble-button-bg);
                   }
@@ -728,12 +680,6 @@ views:
                   action: navigate
                   navigation_path: '#pop-living-room-thermostat'
                 styles: |-
-                  :host {
-                    --bubble-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-icon-container-black: black;
-                    --bubble-sub-icon-size: 13px;
-                  }
                   .bubble-color-background {
                       background-color: rgb(45, 95, 125) !important;
                   }
@@ -1007,13 +953,13 @@ views:
               moonset: true
               moon_phase: true
             card_mod: *style_teal
-    theme: Mushroom Square Shadow
   - title: Security
     icon: mdi:shield-home-outline
     subview: false
     badges: []
     cards: []
     type: sections
+    theme: My Dashboard Theme
     max_columns: 4
     sections:
       - type: grid
@@ -1028,7 +974,6 @@ views:
                   - arm_away
                 type: alarm-panel
                 entity: alarm_control_panel.home_alarm
-                theme: Mushroom Square Shadow
                 card_mod:
                   style: |
                     ha-card {
@@ -1195,6 +1140,7 @@ views:
   - icon: mdi:devices
     title: Devices
     type: sections
+    theme: My Dashboard Theme
     badges: []
     cards: []
     sections:
@@ -1300,13 +1246,6 @@ views:
                   tap_action:
                     action: more-info
                 styles: |
-                  :host {
-                    --bubble-button-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-sub-icon-size: 13px;
-                    --bubble-button-bg: rgba(52, 152, 220, 0.95);
-                    --bubble-icon-container-bg: #0F2C64;
-                  }
                   .bubble-button-background {
                     background-color: var(--bubble-button-bg);
                   }
@@ -1473,10 +1412,10 @@ views:
             state_color: true
             secondary_info: last-changed
   - type: sections
+    theme: My Dashboard Theme
     max_columns: 3
     path: watchtower
     icon: mdi:binoculars
-    theme: Mushroom Square Shadow
     sections:
       - type: grid
         cards:
@@ -1707,6 +1646,7 @@ views:
     badges: []
     cards: []
     type: sections
+    theme: My Dashboard Theme
     sections:
       - type: grid
         cards:
