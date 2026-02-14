@@ -214,7 +214,7 @@ views:
                   }
                   .bubble-sub-button-2 {
                     color: white !important;
-                    background-color: ${hass.states['lock.front_door'].state === 'on' ? '' : '#37474F'} !important;
+                    background-color: ${hass.states['lock.front_door'].state === 'locked' ? '#FF8000' : '#37474F'} !important;
                     font-size: 10px;
                   }
                   .bubble-sub-button-3 {
