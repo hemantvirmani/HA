@@ -705,7 +705,7 @@ views:
                   navigation_path: '#pop-living-room-thermostat'
                 styles: |-
                   :host {
-                    --bubble-button-border-radius: 7px;
+                    --bubble-border-radius: 7px;
                     --bubble-sub-button-border-radius: 7px;
                     --bubble-icon-container-black: black;
                     --bubble-sub-icon-size: 13px;
@@ -735,7 +735,7 @@ views:
                 card_layout: large-2-rows
                 styles: |-
                   :host {
-                    --bubble-button-border-radius: 7px;
+                    --bubble-border-radius: 7px;
                     --bubble-sub-button-border-radius: 7px;
                     --bubble-icon-container-black: black;
                     --bubble-sub-icon-size: 13px;
@@ -762,7 +762,7 @@ views:
                 cover_background: false
                 styles: |-
                   :host {
-                    --bubble-button-border-radius: 7px;
+                    --bubble-border-radius: 7px;
                     --bubble-sub-button-border-radius: 7px;
                     --bubble-icon-container-black: black;
                     --bubble-sub-icon-size: 13px;
