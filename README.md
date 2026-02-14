@@ -6,28 +6,28 @@ Home Assistant Lovelace dashboard configuration managed in YAML mode.
 
 | File | Purpose |
 |------|---------|
-| `current-dashboard.yaml` | Active working dashboard (edit this file) |
-| `old.dashboard.yaml` | Frozen Snapshot - Original production dashboard (do not modify) |
-| `new.dashboard.yaml` | Frozen Snapshot - Snapshot used to create current-dashboard (do not modify) |
+| `dashboard-current.yaml` | Active working dashboard (edit this file) |
+| `dashboard-old.yaml` | Frozen Snapshot - Original production dashboard (do not modify) |
+| `dashboard-new.yaml` | Frozen Snapshot - Snapshot used to create current-dashboard (do not modify) |
 | `deploy_dashboard.py` | Deployment script for pushing changes to HA |
 
 ## 🏷️ Tagging / Checkpoints
 
 | Tag | Points To | Description |
 |-----|-----------|-------------|
-| `dashboard-v1` | First commit | Original dashboard (`old.dashboard.yaml`) |
+| `dashboard-v1` | First commit | Original dashboard (`dashboard-old.yaml`) |
 | `dashboard-v2` | Current | New dashboard with inline styles, teal backgrounds, section headers |
 | `live-v1` | Same as v2 | First live deployment |
 
 **Usage:**
-- Compare versions: `git diff dashboard-v1 dashboard-v2 -- current-dashboard.yaml`
-- View a past version: `git show dashboard-v2:current-dashboard.yaml`
+- Compare versions: `git diff dashboard-v1 dashboard-v2 -- dashboard-current.yaml`
+- View a past version: `git show dashboard-v2:dashboard-current.yaml`
 - Tag a new checkpoint: `git tag -a dashboard-v3 -m "description"`
 - Tag a live deploy: `git tag -a live-v2 -m "description"`
 
 ## 🔧 Development Workflow
 
-1. Edit `current-dashboard.yaml` locally
+1. Edit `dashboard-current.yaml` locally
 2. Validate YAML syntax
 3. Deploy with `deploy_dashboard.py` (see [DEPLOYMENT.md](DEPLOYMENT.md) for details)
 4. Verify in Home Assistant UI

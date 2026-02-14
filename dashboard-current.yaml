@@ -654,7 +654,7 @@ views:
                   }
                   .bubble-sub-button-2 {
                     color: ${hass.states['light.temple_light'].state === 'on' ? 'white' : 'white'} !important;
-                    background-color: ${hass.states['light.temple_light'].state === 'on' ? '#ff7800' : '#37474F'} !important;
+                    background-color: ${hass.states['light.temple_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
                     font-size: 10px
                   }
 
@@ -1160,7 +1160,10 @@ views:
                 camera_view: auto
                 type: picture-entity
                 entity: camera.172_19_0_4
-              - type: picture-entity
+              - show_state: true
+                show_name: true
+                camera_view: auto
+                type: picture-entity
                 entity: camera.172_19_0_4_2
               - show_state: true
                 show_name: true
@@ -1300,15 +1303,15 @@ views:
                   }
                   .bubble-sub-button-1 {
                     background-color:  '#37474F'} !important;
-                    font-size: 12px
+                    font-size: 10px
                   }  
                   .bubble-sub-button-2 {
                     background-color:  '#37474F'} !important;
-                    font-size: 12px
+                    font-size: 10px
                   }  
                   .bubble-sub-button-3 {
                   background-color:  '#37474F'} !important;
-                  font-size: 12px
+                  font-size: 10px
                   }
 
           - type: custom:mushroom-template-card

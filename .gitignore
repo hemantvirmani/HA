@@ -30,4 +30,4 @@ Thumbs.db
 deployment.log
 
 # Configuration (may contain secrets)
-deploy_config.ini
+.claude/settings.local.json
