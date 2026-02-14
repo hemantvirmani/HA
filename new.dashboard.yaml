@@ -8,6 +8,9 @@ _styles:
   section_header: &style_section_header
     style: |
       ha-card { background-color: rgba(29, 78, 216, 0.95); }
+  section_header_hidden: &style_section_header_hidden
+    style: |
+      ha-card { background-color: rgba(29, 78, 216, 0.95); display: none; }
   teal_card: &style_teal
     style: |
       ha-card { background-color: rgb(45, 95, 125); }
@@ -1075,6 +1078,7 @@ views:
                       - state
                       - last_changed
                     color: teal
+                    card_mod: *style_teal
                   - type: tile
                     entity: binary_sensor.front_window
                     state_content:
@@ -1082,12 +1086,15 @@ views:
                       - last_changed
                     show_entity_picture: false
                     color: teal
+                    card_mod: *style_teal
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.garage_backdoor
+                    card_mod: *style_teal
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.entry_room_side_window
+                    card_mod: *style_teal
               - type: custom:mushroom-template-card
                 primary: Sensors for Living Room (LR) et. al.
                 card_mod: *style_section_header
@@ -1095,20 +1102,26 @@ views:
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.living_room_back_window_right
+                    card_mod: *style_teal
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.living_room_back_window_left
+                    card_mod: *style_teal
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.kitchen_window
+                    card_mod: *style_teal
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.mummy_papa_room_back_window
+                    card_mod: *style_teal
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.garage_door
+                    card_mod: *style_teal
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.living_room_back_door
+                    card_mod: *style_teal
               - type: custom:mushroom-template-card
                 primary: Upper Floor Sensors
                 card_mod: *style_section_header
@@ -1116,20 +1129,25 @@ views:
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.master_bedroom_back_window_left
+                    card_mod: *style_teal
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.master_bedroom_back_window_right
+                    card_mod: *style_teal
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.study_back_window
                     name: Study Window
+                    card_mod: *style_teal
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.upper_front_window
+                    card_mod: *style_teal
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.office_side_window
                     name: Office Window
+                    card_mod: *style_teal
       - type: grid
         cards:
           - type: vertical-stack
@@ -1352,7 +1370,7 @@ views:
                 primary: Sprinklers
                 color: white
                 features_position: bottom
-                card_mod: *style_section_header
+                card_mod: *style_section_header_hidden
               - square: false
                 type: grid
                 cards:
@@ -1360,12 +1378,12 @@ views:
                     entity: switch.backyard1_zone_zone
                     features_position: bottom
                     vertical: false
-                    card_mod: *style_teal
+                    card_mod: *style_teal_hidden
                   - type: tile
                     entity: switch.backyard_2_sprinklr_zone_zone
                     features_position: bottom
                     vertical: false
-                    card_mod: *style_teal
+                    card_mod: *style_teal_hidden
                 columns: 2
       - type: grid
         cards:
@@ -1674,13 +1692,19 @@ views:
     sections:
       - type: grid
         cards:
-          - type: heading
-            heading_style: title
-            heading: Persona
+          - type: custom:mushroom-template-card
+            primary: Persona
+            icon: mdi:account-group
+            color: white
+            features_position: bottom
+            card_mod: *style_section_header
+            grid_options:
+              columns: full
           - type: vertical-stack
             cards:
               - type: custom:stack-in-card
                 mode: horizontal
+                card_mod: *style_teal
                 cards:
                   - type: custom:mushroom-person-card
                     entity: person.hemant_virmani
@@ -1781,6 +1805,7 @@ views:
                     alignment: justify
               - type: custom:stack-in-card
                 mode: horizontal
+                card_mod: *style_teal
                 cards:
                   - type: custom:mushroom-person-card
                     entity: person.nupur
@@ -1881,6 +1906,7 @@ views:
                     alignment: justify
               - type: custom:stack-in-card
                 mode: horizontal
+                card_mod: *style_teal
                 cards:
                   - type: custom:mushroom-person-card
                     entity: person.prax
