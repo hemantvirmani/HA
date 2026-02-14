@@ -26,9 +26,6 @@ _styles:
   alert_red_alpha: &style_alert_red_alpha
     style: |
       ha-card { background-color: rgba(220, 53, 69, 0.95); }
-  thermostat_popup: &style_thermostat_popup
-    style: |
-      ha-card { background-color: rgb(37, 85, 178); }
 
 views:
   - title: Home
@@ -848,7 +845,24 @@ views:
               - type: custom:bubble-card
                 card_type: pop-up
                 hash: '#pop-living-room-thermostat'
-                card_mod: *style_thermostat_popup
+                card_mod:
+                  style: |
+                    ha-card { 
+                      background-color: rgb(45, 95, 125);
+                    }
+                    ha-dialog {
+                      max-height: 600px !important;
+                    }
+                    mwc-dialog {
+                      max-height: 600px !important;
+                    }
+                    div {
+                      max-height: 600px !important;
+                    }
+                    .bubble-popup-card {
+                      max-height: 600px !important;
+                      overflow: hidden;
+                    }
               - type: thermostat
                 entity: climate.living_room
                 features:
@@ -864,7 +878,11 @@ views:
                     style: dropdown
                 show_current_as_primary: true
                 name: Living Room Thermostat
-                card_mod: *style_thermostat_popup
+                card_mod:
+                  style: |
+                    ha-card { 
+                      background-color: rgb(45, 95, 125);
+                    }
           - type: vertical-stack
             cards:
               - type: custom:bubble-card
