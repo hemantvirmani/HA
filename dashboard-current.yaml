@@ -26,6 +26,38 @@ _styles:
   alert_red_alpha: &style_alert_red_alpha
     style: |
       ha-card { background-color: rgba(220, 53, 69, 0.95); }
+  # Bubble card styles (string anchors for the 'styles:' property)
+  bubble_media_player: &style_bubble_media |-
+    :host {
+      --bubble-border-radius: 7px;
+      --bubble-sub-button-border-radius: 7px;
+      --bubble-icon-container-black: black;
+      --bubble-sub-icon-size: 13px;
+    }
+    .bubble-media-player-container {
+      background-color: rgb(45, 95, 125) !important;
+    }
+    .bubble-icon-container {
+      background: var(--bubble-icon-container-black);
+    }
+    .bubble-sub-button-icon {
+      --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+    }
+  # card_mod style anchors for chips and popup padding
+  chips_clean: &style_chips_clean
+    style: |
+      ha-card {
+        --chip-box-shadow: none;
+        --chip-background: none;
+        --chip-spacing: none;
+        --chip-height: 33px;
+      }
+  popup_padding_str: &style_popup_padding |
+    ha-card {
+      padding-right: 15px;
+      padding-left: 15px;
+      padding-bottom: 15px;
+    }
 
 views:
   - title: Home
@@ -75,7 +107,7 @@ views:
               {{ states('input_text.weather_alert_summary') | string }}{{
               states('input_text.weather_alert_remainder') | string }}
             multiline_secondary: true
-            icon: mdi:door-open
+            icon: mdi:weather-lightning-rainy
             tap_action:
               action: navigate
               navigation_path: '#pop-weather-details'
@@ -167,28 +199,28 @@ views:
                     --bubble-icon-container-bg: #0F2C64;
                   }
                   .bubble-button-background {
-                    background-color: var(--bubble-button-bg) !important;
+                    background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                    background: var(--bubble-icon-container-bg) !important;
+                    background: var(--bubble-icon-container-bg);
                   }
                   .bubble-sub-button-icon {
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: ${hass.states['light.main_door_ceiling_light_tl'].state === 'on' ? 'white' : 'white'} !important;
+                    color: white !important;
                     background-color: ${hass.states['light.main_door_ceiling_light_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px
-                  }  
+                    font-size: 10px;
+                  }
                   .bubble-sub-button-2 {
-                    color: ${hass.states['lock.front_door'].state === 'on' ? 'white' : 'white'} !important;
+                    color: white !important;
                     background-color: ${hass.states['lock.front_door'].state === 'on' ? '' : '#37474F'} !important;
-                    font-size: 10px
+                    font-size: 10px;
                   }
                   .bubble-sub-button-3 {
-                    color: ${hass.states['light.garage_back_light'].state === 'on' ? 'white' : 'white'} !important;
+                    color: white !important;
                     background-color: ${hass.states['light.garage_back_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px
+                    font-size: 10px;
                   }
 
                 show_icon: true
@@ -257,24 +289,24 @@ views:
                     --bubble-icon-container-bg: #0F2C64;
                   }
                   .bubble-button-background {
-                    background-color: var(--bubble-button-bg) !important;
+                    background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                    background: var(--bubble-icon-container-bg) !important;
+                    background: var(--bubble-icon-container-bg);
                   }
                   .bubble-sub-button-icon {
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: ${hass.states['light.front_string_lights'].state === 'on' ? 'white' : 'white'} !important;
+                    color: white !important;
                     background-color: ${hass.states['light.front_string_lights'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px
+                    font-size: 10px;
                   }
                   .bubble-sub-button-2 {
-                    color: ${hass.states['light.entry_string_lights'].state === 'on' ? 'white' : 'white'} !important;
+                    color: white !important;
                     background-color: ${hass.states['light.entry_string_lights'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px
-                  }  
+                    font-size: 10px;
+                  }
 
 
                 show_icon: true
@@ -357,28 +389,28 @@ views:
                     --bubble-icon-container-bg: #0F2C64;
                   }
                   .bubble-button-background {
-                      background-color: var(--bubble-button-bg);
+                    background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: var(--bubble-icon-container-bg);
+                    background: var(--bubble-icon-container-bg);
                   }
                   .bubble-sub-button-icon {
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: ${hass.states['light.living_room_lamp_tl'].state === 'on' ? 'white' : 'white'} !important;
+                    color: white !important;
                     background-color: ${hass.states['light.living_room_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px
-                  }  
+                    font-size: 10px;
+                  }
                   .bubble-sub-button-2 {
-                    color: ${hass.states['light.living_room_lamp_2_tl'].state === 'on' ? 'white' : 'white'} !important;
+                    color: white !important;
                     background-color: ${hass.states['light.living_room_lamp_2_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px
-                  }  
-                    .bubble-sub-button-3 {
-                    color: ${hass.states['light.living_room_string_light'].state === 'on' ? 'white' : 'white'} !important;
+                    font-size: 10px;
+                  }
+                  .bubble-sub-button-3 {
+                    color: white !important;
                     background-color: ${hass.states['light.living_room_string_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px
+                    font-size: 10px;
                   }
 
                 show_icon: true
@@ -470,28 +502,26 @@ views:
                       background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: var(--bubble-icon-container-bg);
+                    background: var(--bubble-icon-container-bg);
                   }
-
-                    .bubble-sub-button-icon {
-                      --mdc-icon-size: var(--bubble-sub-icon-size) !important;
-                    }
-
-                    .bubble-sub-button-1 {
-                      color: ${hass.states['light.king_lamp_lt'].state === 'on' ? 'white' : 'white'} !important;
-                      background-color: ${hass.states['light.king_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                      font-size: 10px
-                    }  
-                    .bubble-sub-button-2 {
-                      color: ${hass.states['light.queen_lamp_lt'].state === 'on' ? 'white' : 'white'} !important;
-                      background-color: ${hass.states['light.queen_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                      font-size: 10px
-                    }  
-                    .bubble-sub-button-3 {
-                      color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? 'white' : 'white'} !important;
-                      background-color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
-                      font-size: 10px
-                    }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+                  .bubble-sub-button-1 {
+                    color: white !important;
+                    background-color: ${hass.states['light.king_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px;
+                  }
+                  .bubble-sub-button-2 {
+                    color: white !important;
+                    background-color: ${hass.states['light.queen_lamp_lt'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px;
+                  }
+                  .bubble-sub-button-3 {
+                    color: white !important;
+                    background-color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
+                    font-size: 10px;
+                  }
 
                 show_icon: true
                 show_name: true
@@ -549,27 +579,24 @@ views:
                     --bubble-icon-container-bg: #0F2C64;
                   }
                   .bubble-button-background {
-                      background-color: var(--bubble-button-bg);
+                    background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: var(--bubble-icon-container-bg);
+                    background: var(--bubble-icon-container-bg);
                   }
-
-                    .bubble-sub-button-icon {
-                      --mdc-icon-size: var(--bubble-sub-icon-size) !important;
-                    }
-
-                      .bubble-sub-button-1 {
-                      color: ${hass.states['fan.study_fan_tl'].state === 'on' ? 'white' : 'white'} !important;
-                      background-color: ${hass.states['fan.study_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
-                      font-size: 10px
-                    }
-
-                      .bubble-sub-button-2 {
-                      color: ${hass.states['light.study_lamp_tl'].state === 'on' ? 'white' : 'white'} !important;
-                      background-color: ${hass.states['light.study_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                      font-size: 10px
-                    }
+                  .bubble-sub-button-icon {
+                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
+                  }
+                  .bubble-sub-button-1 {
+                    color: white !important;
+                    background-color: ${hass.states['fan.study_fan_tl'].state === 'on' ? '' : '#37474F'} !important;
+                    font-size: 10px;
+                  }
+                  .bubble-sub-button-2 {
+                    color: white !important;
+                    background-color: ${hass.states['light.study_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px;
+                  }
 
                 show_icon: true
                 show_name: true
@@ -636,23 +663,23 @@ views:
                     --bubble-icon-container-bg: #0F2C64;
                   }
                   .bubble-button-background {
-                      background-color: var(--bubble-button-bg);
+                    background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: var(--bubble-icon-container-bg);
+                    background: var(--bubble-icon-container-bg);
                   }
                   .bubble-sub-button-icon {
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? 'white' : 'white'} !important;
-                    background-color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? '' : '#37474F'} !important;
-                    font-size: 10px
+                    color: white !important;
+                    background-color: ${hass.states['light.bathroom_lamp_tl'].state === 'on' ? '#FF8000' : '#37474F'} !important;
+                    font-size: 10px;
                   }
                   .bubble-sub-button-2 {
-                    color: ${hass.states['light.temple_light'].state === 'on' ? 'white' : 'white'} !important;
+                    color: white !important;
                     background-color: ${hass.states['light.temple_light'].state === 'on' ? '#FF8000' : '#37474F'} !important;
-                    font-size: 10px
+                    font-size: 10px;
                   }
 
                 show_icon: true
@@ -730,22 +757,7 @@ views:
                   previous_button: true
                   volume_button: true
                 card_layout: large-2-rows
-                styles: |-
-                  :host {
-                    --bubble-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-icon-container-black: black;
-                    --bubble-sub-icon-size: 13px;
-                  }
-                  .bubble-media-player-container {
-                      background-color: rgb(45, 95, 125) !important;
-                  }
-                  .bubble-icon-container {
-                      background: var(--bubble-icon-container-black);
-                  }
-                  .bubble-sub-button-icon {
-                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
-                  }
+                styles: *style_bubble_media
               - type: custom:bubble-card
                 card_type: media-player
                 name: Sonos
@@ -757,22 +769,7 @@ views:
                 attribute: is_volume_muted
                 card_layout: large-2-rows
                 cover_background: false
-                styles: |-
-                  :host {
-                    --bubble-border-radius: 7px;
-                    --bubble-sub-button-border-radius: 7px;
-                    --bubble-icon-container-black: black;
-                    --bubble-sub-icon-size: 13px;
-                  }
-                  .bubble-media-player-container {
-                      background-color: rgb(45, 95, 125) !important;
-                  }
-                  .bubble-icon-container {
-                      background: var(--bubble-icon-container-black);
-                  }
-                  .bubble-sub-button-icon {
-                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
-                  }
+                styles: *style_bubble_media
                 entity: media_player.192_168_86_33_sonos_arc
               - type: custom:mushroom-template-card
                 icon: mdi:battery-70
@@ -1311,25 +1308,25 @@ views:
                     --bubble-icon-container-bg: #0F2C64;
                   }
                   .bubble-button-background {
-                      background-color: var(--bubble-button-bg);
+                    background-color: var(--bubble-button-bg);
                   }
                   .bubble-icon-container {
-                      background: var(--bubble-icon-container-bg);
+                    background: var(--bubble-icon-container-bg);
                   }
                   .bubble-sub-button-icon {
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
                   }
                   .bubble-sub-button-1 {
-                    background-color:  '#37474F'} !important;
-                    font-size: 10px
-                  }  
+                    background-color: #37474F !important;
+                    font-size: 10px;
+                  }
                   .bubble-sub-button-2 {
-                    background-color:  '#37474F'} !important;
-                    font-size: 10px
-                  }  
+                    background-color: #37474F !important;
+                    font-size: 10px;
+                  }
                   .bubble-sub-button-3 {
-                  background-color:  '#37474F'} !important;
-                  font-size: 10px
+                    background-color: #37474F !important;
+                    font-size: 10px;
                   }
 
           - type: custom:mushroom-template-card
@@ -1740,12 +1737,7 @@ views:
                         title: Hemant Virmani
                         card:
                           type: custom:mod-card
-                          style: |
-                            ha-card {
-                               padding-right: 15px;
-                               padding-left: 15px;
-                               padding-bottom: 15px;     
-                            }
+                          style: *style_popup_padding
                           card:
                             type: vertical-stack
                             cards:
@@ -1755,13 +1747,7 @@ views:
                                 icon: mdi:map-marker
                                 icon_color: yellow
                   - type: custom:mushroom-chips-card
-                    style: |
-                      ha-card {
-                        --chip-box-shadow: none;
-                        --chip-background: none;
-                        --chip-spacing: none;
-                        --chip-height: 33px
-                      }
+                    card_mod: *style_chips_clean
                     chips:
                       - type: template
                         entity: sensor.hemant_iphone_battery_state
@@ -1834,12 +1820,7 @@ views:
                         title: Nupur Virmani
                         card:
                           type: custom:mod-card
-                          style: |
-                            ha-card {
-                               padding-right: 15px;
-                               padding-left: 15px;
-                               padding-bottom: 15px;     
-                            }
+                          style: *style_popup_padding
                           card:
                             type: vertical-stack
                             cards:
@@ -1849,13 +1830,7 @@ views:
                                 icon: mdi:map-marker
                                 icon_color: yellow
                   - type: custom:mushroom-chips-card
-                    style: |
-                      ha-card {
-                        --chip-box-shadow: none;
-                        --chip-background: none;
-                        --chip-spacing: none;
-                        --chip-height: 33px
-                      }
+                    card_mod: *style_chips_clean
                     chips:
                       - type: template
                         entity: sensor.nupurs_iphone_battery_state
@@ -1928,12 +1903,7 @@ views:
                         title: Prakriti Virmani
                         card:
                           type: custom:mod-card
-                          style: |
-                            ha-card {
-                               padding-right: 15px;
-                               padding-left: 15px;
-                               padding-bottom: 15px;     
-                            }
+                          style: *style_popup_padding
                           card:
                             type: vertical-stack
                             cards:
@@ -1943,13 +1913,7 @@ views:
                                 icon: mdi:map-marker
                                 icon_color: yellow
                   - type: custom:mushroom-chips-card
-                    style: |
-                      ha-card {
-                        --chip-box-shadow: none;
-                        --chip-background: none;
-                        --chip-spacing: none;
-                        --chip-height: 33px
-                      }
+                    card_mod: *style_chips_clean
                     chips:
                       - type: template
                         entity: sensor.prax_iphone_battery_state
