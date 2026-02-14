@@ -7,8 +7,8 @@ Home Assistant Lovelace dashboard configuration managed in YAML mode.
 | File | Purpose |
 |------|---------|
 | `current-dashboard.yaml` | Active working dashboard (edit this file) |
-| `old.dashboard.yaml` | Original production dashboard (do not modify) |
-| `new.dashboard.yaml` | Snapshot used to create current-dashboard (do not modify) |
+| `old.dashboard.yaml` | Frozen Snapshot - Original production dashboard (do not modify) |
+| `new.dashboard.yaml` | Frozen Snapshot - Snapshot used to create current-dashboard (do not modify) |
 | `deploy_dashboard.py` | Deployment script for pushing changes to HA |
 
 ## 🏷️ Tagging / Checkpoints
@@ -24,6 +24,15 @@ Home Assistant Lovelace dashboard configuration managed in YAML mode.
 - View a past version: `git show dashboard-v2:current-dashboard.yaml`
 - Tag a new checkpoint: `git tag -a dashboard-v3 -m "description"`
 - Tag a live deploy: `git tag -a live-v2 -m "description"`
+
+## 🔧 Development Workflow
+
+1. Edit `current-dashboard.yaml` locally
+2. Validate YAML syntax
+3. Deploy with `deploy_dashboard.py` (see [DEPLOYMENT.md](DEPLOYMENT.md) for details)
+4. Verify in Home Assistant UI
+5. Tag checkpoint: `git tag -a dashboard-vN -m "description"`
+6. If deploying live: `git tag -a live-vN -m "description"`
 
 ## 🚀 Quick Deploy
 
@@ -95,15 +104,6 @@ CSS custom properties for bubble-card are defined inline in each card's `:host` 
 | `--bubble-sub-icon-size` | `13px` | Sub-button icon size |
 
 Each bubble card's `styles:` uses `var(--variable)` to reference these values from its own `:host` block.
-
-## 🔧 Development Workflow
-
-1. Edit `current-dashboard.yaml` locally
-2. Validate YAML syntax
-3. Deploy with `deploy_dashboard.py` (see [DEPLOYMENT.md](DEPLOYMENT.md) for details)
-4. Verify in Home Assistant UI
-5. Tag checkpoint: `git tag -a dashboard-vN -m "description"`
-6. If deploying live: `git tag -a live-vN -m "description"`
 
 ## 📖 More Information
 
