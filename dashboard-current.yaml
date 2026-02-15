@@ -900,7 +900,7 @@ views:
                 card_mod: *style_teal
               - type: custom:mini-graph-card
                 entities:
-                  - sensor.airnow_air_quality_index
+                  - sensor.air_quality_index
                 line_color: '#e74c3c'
                 line_width: 8
                 font_size: 75
@@ -986,7 +986,7 @@ views:
                       --mdc-button-outline-color: rgba(240, 240, 240, 255);
                       --paper-font-subhead_-_font-size: 1.5rem;
                       --mdc-shape-small: 100%;
-                      background-color: rgb(45,95,125);
+                      background-color: var(--teal-bg);
                     }
                     mwc-button:
                     $: | 
@@ -1939,61 +1939,3 @@ views:
                         icon_color: blue
                         entity: sensor.prax_iphone_ssid
                     alignment: justify
-      - type: grid
-        cards:
-          - type: custom:mushroom-template-card
-            primary: Air Quality
-            icon: mdi:air-filter
-            color: white
-            features_position: bottom
-            card_mod: *style_section_header
-            grid_options:
-              columns: full
-          - type: tile
-            entity: sensor.air_quality_index
-            vertical: false
-            features_position: bottom
-            state_content:
-              - state
-              - last_changed
-            card_mod: *style_teal
-          - type: tile
-            entity: sensor.aqi_pm10
-            vertical: false
-            features_position: bottom
-            state_content:
-              - state
-              - last_changed
-            card_mod: *style_teal
-          - type: tile
-            entity: sensor.aqi_so2
-            vertical: false
-            features_position: bottom
-            state_content:
-              - state
-              - last_changed
-            card_mod: *style_teal
-          - type: tile
-            entity: sensor.aqi_pm2_5
-            vertical: false
-            features_position: bottom
-            state_content:
-              - state
-              - last_changed
-            card_mod: *style_teal
-          - type: tile
-            entity: sensor.aqi_o3
-            vertical: false
-            features_position: bottom
-            state_content:
-              - state
-              - last_changed
-            card_mod: *style_teal
-          - type: tile
-            entity: sensor.aqi_co
-            vertical: false
-            features_position: bottom
-            state_content:
-              - state
-              - last_changed
-            card_mod: *style_teal
