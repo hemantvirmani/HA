@@ -1,0 +1,175 @@
+# Air Quality Index (AQI) Template Sensor
+# Add this to your configuration.yaml under the 'template:' section
+# or create a separate file in packages/
+
+template:
+  - sensor:
+      # Overall AQI - returns the highest (worst) AQI from all pollutants
+      - name: "Air Quality Index"
+        unique_id: air_quality_index_overall
+        unit_of_measurement: "AQI"
+        state_class: measurement
+        icon: mdi:air-filter
+        state: >
+          {% set aqi_values = [
+            states('sensor.aqi_pm2_5') | float(0),
+            states('sensor.aqi_pm10') | float(0),
+            states('sensor.aqi_co') | float(0),
+            states('sensor.aqi_so2') | float(0),
+            states('sensor.aqi_o3') | float(0)
+          ] %}
+          {{ aqi_values | max | round(0) }}
+        attributes:
+          category: >
+            {% set aqi = states('sensor.air_quality_index') | float(0) %}
+            {% if aqi <= 50 %}Good
+            {% elif aqi <= 100 %}Moderate
+            {% elif aqi <= 150 %}Unhealthy for Sensitive Groups
+            {% elif aqi <= 200 %}Unhealthy
+            {% elif aqi <= 300 %}Very Unhealthy
+            {% else %}Hazardous
+            {% endif %}
+          color: >
+            {% set aqi = states('sensor.air_quality_index') | float(0) %}
+            {% if aqi <= 50 %}Green
+            {% elif aqi <= 100 %}Yellow
+            {% elif aqi <= 150 %}Orange
+            {% elif aqi <= 200 %}Red
+            {% elif aqi <= 300 %}Purple
+            {% else %}Maroon
+            {% endif %}
+          dominant_pollutant: >
+            {% set pm25 = states('sensor.aqi_pm2_5') | float(0) %}
+            {% set pm10 = states('sensor.aqi_pm10') | float(0) %}
+            {% set co = states('sensor.aqi_co') | float(0) %}
+            {% set so2 = states('sensor.aqi_so2') | float(0) %}
+            {% set o3 = states('sensor.aqi_o3') | float(0) %}
+            {% set max_aqi = [pm25, pm10, co, so2, o3] | max %}
+            {% if pm25 == max_aqi %}PM2.5
+            {% elif pm10 == max_aqi %}PM10
+            {% elif co == max_aqi %}CO
+            {% elif so2 == max_aqi %}SO2
+            {% elif o3 == max_aqi %}O3
+            {% else %}Unknown
+            {% endif %}
+
+      # PM2.5 AQI (using OpenWeatherMap sensor)
+      - name: "AQI PM2.5"
+        unique_id: aqi_pm2_5
+        unit_of_measurement: "AQI"
+        state_class: measurement
+        icon: mdi:blur
+        state: >
+          {% set c = states('sensor.openweathermap_pm2_5') | float(0) %}
+          {% if c <= 12.0 %}
+            {{ ((50 - 0) / (12.0 - 0.0) * (c - 0.0) + 0) | round(0) }}
+          {% elif c <= 35.4 %}
+            {{ ((100 - 51) / (35.4 - 12.1) * (c - 12.1) + 51) | round(0) }}
+          {% elif c <= 55.4 %}
+            {{ ((150 - 101) / (55.4 - 35.5) * (c - 35.5) + 101) | round(0) }}
+          {% elif c <= 150.4 %}
+            {{ ((200 - 151) / (150.4 - 55.5) * (c - 55.5) + 151) | round(0) }}
+          {% elif c <= 250.4 %}
+            {{ ((300 - 201) / (250.4 - 150.5) * (c - 150.5) + 201) | round(0) }}
+          {% elif c <= 500.4 %}
+            {{ ((500 - 301) / (500.4 - 250.5) * (c - 250.5) + 301) | round(0) }}
+          {% else %}
+            500
+          {% endif %}
+
+      # PM10 AQI (using AirNow sensor)
+      - name: "AQI PM10"
+        unique_id: aqi_pm10
+        unit_of_measurement: "AQI"
+        state_class: measurement
+        icon: mdi:blur
+        state: >
+          {% set c = states('sensor.airnow_pm10') | float(0) %}
+          {% if c <= 54 %}
+            {{ ((50 - 0) / (54 - 0) * (c - 0) + 0) | round(0) }}
+          {% elif c <= 154 %}
+            {{ ((100 - 51) / (154 - 55) * (c - 55) + 51) | round(0) }}
+          {% elif c <= 254 %}
+            {{ ((150 - 101) / (254 - 155) * (c - 155) + 101) | round(0) }}
+          {% elif c <= 354 %}
+            {{ ((200 - 151) / (354 - 255) * (c - 255) + 151) | round(0) }}
+          {% elif c <= 424 %}
+            {{ ((300 - 201) / (424 - 355) * (c - 355) + 201) | round(0) }}
+          {% elif c <= 604 %}
+            {{ ((500 - 301) / (604 - 425) * (c - 425) + 301) | round(0) }}
+          {% else %}
+            500
+          {% endif %}
+
+      # CO AQI (using OpenWeatherMap sensor - converting μg/m³ to ppm)
+      - name: "AQI CO"
+        unique_id: aqi_co
+        unit_of_measurement: "AQI"
+        state_class: measurement
+        icon: mdi:molecule-co
+        state: >
+          {% set c_ugm3 = states('sensor.openweathermap_carbon_monoxide') | float(0) %}
+          {% set c = (c_ugm3 * 0.000873) | round(1) %}
+          {% if c <= 4.4 %}
+            {{ ((50 - 0) / (4.4 - 0.0) * (c - 0.0) + 0) | round(0) }}
+          {% elif c <= 9.4 %}
+            {{ ((100 - 51) / (9.4 - 4.5) * (c - 4.5) + 51) | round(0) }}
+          {% elif c <= 12.4 %}
+            {{ ((150 - 101) / (12.4 - 9.5) * (c - 9.5) + 101) | round(0) }}
+          {% elif c <= 15.4 %}
+            {{ ((200 - 151) / (15.4 - 12.5) * (c - 12.5) + 151) | round(0) }}
+          {% elif c <= 30.4 %}
+            {{ ((300 - 201) / (30.4 - 15.5) * (c - 15.5) + 201) | round(0) }}
+          {% elif c <= 50.4 %}
+            {{ ((500 - 301) / (50.4 - 30.5) * (c - 30.5) + 301) | round(0) }}
+          {% else %}
+            500
+          {% endif %}
+
+      # SO2 AQI (using OpenWeatherMap sensor - converting μg/m³ to ppb)
+      - name: "AQI SO2"
+        unique_id: aqi_so2
+        unit_of_measurement: "AQI"
+        state_class: measurement
+        icon: mdi:molecule
+        state: >
+          {% set c_ugm3 = states('sensor.openweathermap_sulphur_dioxide') | float(0) %}
+          {% set c = (c_ugm3 * 0.382) | round(0) %}
+          {% if c <= 35 %}
+            {{ ((50 - 0) / (35 - 0) * (c - 0) + 0) | round(0) }}
+          {% elif c <= 75 %}
+            {{ ((100 - 51) / (75 - 36) * (c - 36) + 51) | round(0) }}
+          {% elif c <= 185 %}
+            {{ ((150 - 101) / (185 - 76) * (c - 76) + 101) | round(0) }}
+          {% elif c <= 304 %}
+            {{ ((200 - 151) / (304 - 186) * (c - 186) + 151) | round(0) }}
+          {% elif c <= 604 %}
+            {{ ((300 - 201) / (604 - 305) * (c - 305) + 201) | round(0) }}
+          {% elif c <= 1004 %}
+            {{ ((500 - 301) / (1004 - 605) * (c - 605) + 301) | round(0) }}
+          {% else %}
+            500
+          {% endif %}
+
+      # O3 AQI 8-hour (using OpenWeatherMap sensor - converting μg/m³ to ppm)
+      - name: "AQI O3"
+        unique_id: aqi_o3
+        unit_of_measurement: "AQI"
+        state_class: measurement
+        icon: mdi:weather-sunny-alert
+        state: >
+          {% set c_ugm3 = states('sensor.openweathermap_ozone') | float(0) %}
+          {% set c = (c_ugm3 * 0.000509) | round(3) %}
+          {% if c <= 0.054 %}
+            {{ ((50 - 0) / (0.054 - 0.000) * (c - 0.000) + 0) | round(0) }}
+          {% elif c <= 0.070 %}
+            {{ ((100 - 51) / (0.070 - 0.055) * (c - 0.055) + 51) | round(0) }}
+          {% elif c <= 0.085 %}
+            {{ ((150 - 101) / (0.085 - 0.071) * (c - 0.071) + 101) | round(0) }}
+          {% elif c <= 0.105 %}
+            {{ ((200 - 151) / (0.105 - 0.086) * (c - 0.086) + 151) | round(0) }}
+          {% elif c <= 0.200 %}
+            {{ ((300 - 201) / (0.200 - 0.106) * (c - 0.106) + 201) | round(0) }}
+          {% else %}
+            {{ ((500 - 301) / (0.604 - 0.201) * (c - 0.201) + 301) | round(0) }}
+          {% endif %}
