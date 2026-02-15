@@ -36,7 +36,6 @@ services:
       - 1883:1883
       - 9001:9001
 
-
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -67,6 +66,10 @@ services:
       options:
         max-size: 10m
         max-file: "3"
+    networks:
+      my_home_net:                                                                                                              
+        ipv4_address: 172.28.0.30  # This is the "Static IP" of this docker    
+
 
   tunnel:
     container_name: cloudflared-tunnel
@@ -103,3 +106,9 @@ volumes:
   config:
   log:
 
+networks:
+  my_home_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
