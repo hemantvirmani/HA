@@ -96,7 +96,7 @@ views:
               columns: full
             features_position: bottom
             icon: mdi:shield-home-outline
-            icon_color: cyan
+            color: white
             card_mod: *style_greeting
           - type: custom:mushroom-template-card
             secondary: >-
@@ -104,6 +104,7 @@ views:
               states('input_text.weather_alert_remainder') | string }}
             multiline_secondary: true
             icon: mdi:weather-lightning-rainy
+            color: white
             tap_action:
               action: navigate
               navigation_path: '#pop-weather-details'
@@ -722,7 +723,7 @@ views:
                 icon: mdi:battery-70
                 primary: Battery Monitoring
                 multiline_secondary: false
-                icon_color: white
+                color: white
                 card_mod: *style_section_header
               - square: false
                 type: grid
@@ -970,6 +971,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:shield-home
                 primary: Ring Alarm
+                color: white
                 card_mod: *style_section_header
               - states:
                   - arm_home
@@ -994,6 +996,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:smoke-detector-variant
                 primary: CO / Smoke Alarm
+                color: white
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
@@ -1017,6 +1020,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:motion-sensor
                 primary: Check the Motion !!
+                color: white
                 card_mod: *style_section_header
               - type: tile
                 entity: binary_sensor.motion_detector_stairs
@@ -1042,6 +1046,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:thermometer
                 primary: Sensors @ Entrance
+                color: white
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
@@ -1072,6 +1077,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:thermometer
                 primary: Sensors for Living Room (LR) et. al.
+                color: white
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
@@ -1100,6 +1106,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:thermometer
                 primary: Upper Floor Sensors
+                color: white
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
@@ -1131,6 +1138,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:cctv
                 primary: Cameras in Front of Home
+                color: white
                 card_mod: *style_section_header
               - show_state: true
                 show_name: true
@@ -1145,6 +1153,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:camera-marker-outline
                 primary: Cameras in the Garden
+                color: white
                 card_mod: *style_section_header
               - show_state: true
                 show_name: true
@@ -1216,7 +1225,7 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:printer-wireless
                 primary: HP DeskJet 3700 Series
-                icon_color: white
+                color: white
                 card_mod: *style_section_header
               - type: custom:bubble-card
                 card_type: button
@@ -1292,7 +1301,7 @@ views:
           - type: custom:mushroom-template-card
             icon: mdi:router-wireless
             primary: Google Nest Wifi Pro Router
-            icon_color: white
+            color: white
             card_mod: *style_section_header
             fill_container: true
             grid_options:
@@ -1444,7 +1453,7 @@ views:
             type: custom:mushroom-template-card
             primary: Weather Charts !!
             multiline_secondary: false
-            icon_color: white
+            color: white
             secondary: ''
             card_mod: *style_section_header
             grid_options:
@@ -1483,7 +1492,7 @@ views:
             type: custom:mushroom-template-card
             primary: Hardware
             multiline_secondary: false
-            icon_color: white
+            color: white
             secondary: ''
             card_mod: *style_section_header
             grid_options:
