@@ -1,0 +1,105 @@
+services:
+
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:2.21.5
+    restart: always
+    ports:
+      - "9000:9000/tcp"
+    environment:
+      - TZ=America/Los_Angeles
+    volumes:
+      - /home/hv/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - /home/hv/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    volumes:
+      - /home/hv/mosquitto:/mosquitto
+      - /home/hv/mosquitto/data:/mosquitto/data
+      - /home/hv/mosquitto/log:/mosquitto/log
+    ports:
+      - 1883:1883
+      - 9001:9001
+
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+    ports:
+      - "8053:53/tcp"
+      - "8053:53/udp"
+      - "8080:80/tcp"
+    environment:
+      TZ: 'America/Los_Angeles'
+      WEBPASSWORD: changeme1234
+    # Volumes store your data between container upgrades
+    volumes:
+      - '/home/hv/pihole/etc-pihole:/etc/pihole'
+      - '/home/hv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    restart: unless-stopped
+
+  ring-mqtt:
+    container_name: ring-mqtt
+    restart: unless-stopped
+    image: tsightler/ring-mqtt
+    ports:
+      - 8554:8554                      # Enable RTSP port for external media player access
+    volumes:
+      - /home/hv/ring-mqtt:/data           # Mapping of local folder to provide persistent storage
+    logging:                           #limit logs to 10m and 3 files
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token eyJhIjoiZjMxMWRjM2ZiN2M4YjllMjQ5ZmUyZjhlMWJmYzhlYjYiLCJ0IjoiYWU3MDZkYmYtMTA5NC00ZmQyLWE3OWYtYzkwNTBkMTc0ZWJhIiwicyI6IlkyWTRPVGxrT1RFdFlXVXhaaTAwTVRnNExXRTRZVFF0WWpBMk1tTm1aVE14TlRSaSJ9
+    volumes:
+      - /home/hv/cloudflare:/etc/cloudflared
+    network_mode: host
+
+
+  matter-server:
+    container_name: matter-server
+    image: ghcr.io/home-assistant-libs/python-matter-server:stable
+    restart: unless-stopped
+    security_opt:
+       - apparmor=unconfined
+    volumes:
+       - /home/hv/matter-server-data:/data
+       - /run/dbus:/run/dbus:ro
+    network_mode: host
+
+
+  mermaid-live:
+    image: ghcr.io/mermaid-js/mermaid-live-editor:latest
+    container_name: mermaid-live-editor
+    ports:
+      - "8000:8080"          # Change 8000 to any free port you like
+    restart: unless-stopped
+
+
+volumes:
+  data:
+  config:
+  log:
+

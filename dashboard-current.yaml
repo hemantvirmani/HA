@@ -1026,6 +1026,15 @@ views:
                   - state
                   - last_changed
                 card_mod: *style_teal
+              - type: custom:mushroom-template-card
+                icon: mdi:camera-wireless-outline
+                primary: Indoor Camera
+                card_mod: *style_section_header
+              - show_state: true
+                show_name: true
+                camera_view: auto
+                type: picture-entity
+                entity: camera.indoor_camera
       - type: grid
         cards:
           - type: vertical-stack
@@ -1121,23 +1130,27 @@ views:
             cards:
               - type: custom:mushroom-template-card
                 icon: mdi:cctv
-                primary: Cameras with Live Feed
+                primary: Cameras in Front of Home
                 card_mod: *style_section_header
               - show_state: true
                 show_name: true
                 camera_view: auto
                 type: picture-entity
-                entity: camera.172_19_0_4
+                entity: camera.driveway_camera
               - show_state: true
                 show_name: true
                 camera_view: auto
                 type: picture-entity
-                entity: camera.172_19_0_4_2
+                entity: camera.front_door_bell_camera
+              - type: custom:mushroom-template-card
+                icon: mdi:camera-marker-outline
+                primary: Cameras in the Garden
+                card_mod: *style_section_header
               - show_state: true
                 show_name: true
                 camera_view: auto
                 type: picture-entity
-                entity: camera.172_19_0_4_3
+                entity: camera.garden_camera
                 name: Garden Camera Left
               - show_state: true
                 show_name: true
