@@ -8,29 +8,29 @@ icon: mdi:home-heart
 _styles:
   section_header: &style_section_header
     style: |
-      ha-card { background-color: rgba(29, 78, 216, 0.95); }
+      ha-card { background-color: var(--section-header-bg); }
   section_header_hidden: &style_section_header_hidden
     style: |
-      ha-card { background-color: rgba(29, 78, 216, 0.95); display: none; }
+      ha-card { background-color: var(--section-header-bg); display: none; }
   teal_card: &style_teal
     style: |
-      ha-card { background-color: rgb(45, 95, 125); }
+      ha-card { background-color: var(--teal-bg); }
   teal_hidden: &style_teal_hidden
     style: |
-      ha-card { background-color: rgb(45, 95, 125); display: none; }
+      ha-card { background-color: var(--teal-bg); display: none; }
   greeting: &style_greeting
     style: |
-      ha-card { background-color: rgba(2, 132, 199, 0.95); }
+      ha-card { background-color: var(--greeting-bg); }
   alert_red: &style_alert_red
     style: |
-      ha-card { background-color: rgb(220, 53, 69); }
+      ha-card { background-color: var(--alert-red-bg); }
   alert_red_alpha: &style_alert_red_alpha
     style: |
-      ha-card { background-color: rgba(220, 53, 69, 0.95); }
+      ha-card { background-color: var(--alert-red-alpha-bg); }
   # Bubble card styles (string anchors for the 'styles:' property)
   bubble_media_player: &style_bubble_media |-
     .bubble-media-player-container {
-      background-color: rgb(45, 95, 125) !important;
+      background-color: var(--teal-bg) !important;
     }
     .bubble-icon-container {
       background: var(--bubble-icon-container-black);
@@ -683,7 +683,7 @@ views:
                   navigation_path: '#pop-living-room-thermostat'
                 styles: |-
                   .bubble-color-background {
-                      background-color: rgb(45, 95, 125) !important;
+                      background-color: var(--teal-bg) !important;
                   }
                   .bubble-icon-container {
                       background: var(--bubble-icon-container-black);
@@ -793,7 +793,7 @@ views:
                 card_mod:
                   style: |
                     ha-card { 
-                      background-color: rgb(45, 95, 125);
+                      background-color: var(--teal-bg);
                     }
                     ha-dialog {
                       max-height: 600px !important;
@@ -826,7 +826,7 @@ views:
                 card_mod:
                   style: |
                     ha-card { 
-                      background-color: rgb(45, 95, 125);
+                      background-color: var(--teal-bg);
                     }
           - type: vertical-stack
             cards:
@@ -1939,3 +1939,61 @@ views:
                         icon_color: blue
                         entity: sensor.prax_iphone_ssid
                     alignment: justify
+      - type: grid
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Air Quality
+            icon: mdi:air-filter
+            color: white
+            features_position: bottom
+            card_mod: *style_section_header
+            grid_options:
+              columns: full
+          - type: tile
+            entity: sensor.air_quality_index
+            vertical: false
+            features_position: bottom
+            state_content:
+              - state
+              - last_changed
+            card_mod: *style_teal
+          - type: tile
+            entity: sensor.aqi_pm10
+            vertical: false
+            features_position: bottom
+            state_content:
+              - state
+              - last_changed
+            card_mod: *style_teal
+          - type: tile
+            entity: sensor.aqi_so2
+            vertical: false
+            features_position: bottom
+            state_content:
+              - state
+              - last_changed
+            card_mod: *style_teal
+          - type: tile
+            entity: sensor.aqi_pm2_5
+            vertical: false
+            features_position: bottom
+            state_content:
+              - state
+              - last_changed
+            card_mod: *style_teal
+          - type: tile
+            entity: sensor.aqi_o3
+            vertical: false
+            features_position: bottom
+            state_content:
+              - state
+              - last_changed
+            card_mod: *style_teal
+          - type: tile
+            entity: sensor.aqi_co
+            vertical: false
+            features_position: bottom
+            state_content:
+              - state
+              - last_changed
+            card_mod: *style_teal
