@@ -1,4 +1,7 @@
 My Dashboard Theme:
+  # ── Background ──
+  background-image: "center / cover no-repeat fixed url('/local/bg.png')"
+  lovelace-background: var(--background-image)
   # ── Mushroom Square Shadow base ──
   ha-badge-border-radius: 6px
   ha-card-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.16)
