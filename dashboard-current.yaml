@@ -8,22 +8,63 @@ icon: mdi:home-heart
 _styles:
   section_header: &style_section_header
     style: |
-      ha-card { background-color: var(--section-header-bg); }
+      ha-card {
+        background-color: var(--section-header-bg);
+        color: white;
+        --primary-text-color: white;
+        --secondary-text-color: rgba(255, 255, 255, 0.7);
+        --icon-color: white;
+        --mush-icon-color: white;
+      }
   section_header_hidden: &style_section_header_hidden
     style: |
-      ha-card { background-color: var(--section-header-bg); display: none; }
+      ha-card {
+        background-color: var(--section-header-bg);
+        color: white;
+        --primary-text-color: white;
+        --secondary-text-color: rgba(255, 255, 255, 0.7);
+        --icon-color: white;
+        --mush-icon-color: white;
+        display: none;
+      }
   card: &style_card
     style: |
-      ha-card { background-color: var(--card-bg); }
+      ha-card {
+        background-color: var(--card-bg);
+        color: white;
+        --primary-text-color: white;
+        --secondary-text-color: rgba(255, 255, 255, 0.7);
+        --icon-color: white;
+        --mush-icon-color: white;
+        --state-icon-color: white;
+      }
   card_hidden: &style_card_hidden
     style: |
-      ha-card { background-color: var(--card-bg); display: none; }
+      ha-card {
+        background-color: var(--card-bg);
+        color: white;
+        --primary-text-color: white;
+        --secondary-text-color: rgba(255, 255, 255, 0.7);
+        --icon-color: white;
+        --mush-icon-color: white;
+        display: none;
+      }
   greeting: &style_greeting
     style: |
-      ha-card { background-color: var(--greeting-bg); }
+      ha-card {
+        background-color: var(--greeting-bg);
+        color: white;
+        --primary-text-color: white;
+        --secondary-text-color: rgba(255, 255, 255, 0.7);
+      }
   alert_red: &style_alert_red
     style: |
-      ha-card { background-color: var(--alert-red-bg); }
+      ha-card {
+        background-color: var(--alert-red-bg);
+        color: white;
+        --primary-text-color: white;
+        --secondary-text-color: rgba(255, 255, 255, 0.7);
+      }
   # Bubble card styles (string anchors for the 'styles:' property)
   bubble_media_player: &style_bubble_media |-
     .bubble-media-player-container {
@@ -44,6 +85,8 @@ _styles:
         --chip-background: none;
         --chip-spacing: none;
         --chip-height: 33px;
+        color: white;
+        --primary-text-color: white;
       }
   popup_padding_str: &style_popup_padding |
     ha-card {
@@ -64,6 +107,7 @@ views:
       - type: grid
         cards:
           - type: custom:mushroom-template-card
+            color: white
             primary: |-
               {% set time = now().hour %}
               {% if (time >= 19) %}
@@ -96,6 +140,7 @@ views:
             icon: mdi:shield-home-outline
             card_mod: *style_greeting
           - type: custom:mushroom-template-card
+            color: white
             secondary: >-
               {{ states('input_text.weather_alert_summary') | string }}{{
               states('input_text.weather_alert_remainder') | string }}
@@ -115,6 +160,7 @@ views:
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:home-floor-1
                 primary: |-
                   {% set lrtemp = states('sensor.living_room_temperature') %}
@@ -389,6 +435,7 @@ views:
                 show_last_changed: false
                 show_attribute: true
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:home-floor-2
                 primary: Upper Floor
                 features_position: bottom
@@ -481,7 +528,7 @@ views:
                   }
                   .bubble-sub-button-3 {
                     color: var(--bubble-sub-button-text-color) !important;
-                    background-color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? '' : 'var(--bubble-sub-button-off-color)'} !important;
+                    background-color: ${hass.states['fan.nupur_fan_tl'].state === 'on' ? 'var(--bubble-sub-button-on-color)' : 'var(--bubble-sub-button-off-color)'} !important;
                     font-size: var(--bubble-sub-button-font-size);
                   }
 
@@ -640,6 +687,7 @@ views:
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:devices
                 primary: Devices
                 secondary: Thermostat, TV, Sonos
@@ -714,6 +762,7 @@ views:
                 styles: *style_bubble_media
                 entity: media_player.192_168_86_33_sonos_arc
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:battery-70
                 primary: Battery Monitoring
                 multiline_secondary: false
@@ -818,8 +867,11 @@ views:
                 name: Living Room Thermostat
                 card_mod:
                   style: |
-                    ha-card { 
+                    ha-card {
                       background-color: var(--card-bg);
+                      color: white;
+                      --primary-text-color: white;
+                      --secondary-text-color: rgba(255, 255, 255, 0.7);
                     }
           - type: vertical-stack
             cards:
@@ -829,6 +881,7 @@ views:
                 show_header: false
                 card_mod: *style_alert_red
               - type: custom:mushroom-template-card
+                color: white
                 primary: Weather Alerts
                 secondary: >
                   {% set num_alerts = states('sensor.nws_alerts_alerts') | int 
@@ -869,6 +922,7 @@ views:
       - type: grid
         cards:
           - type: custom:mushroom-template-card
+            color: white
             icon: mdi:weather-partly-cloudy
             primary: Weather
             secondary: ''
@@ -961,6 +1015,7 @@ views:
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:shield-home
                 primary: Ring Alarm
                 card_mod: *style_section_header
@@ -985,6 +1040,7 @@ views:
                         --mdc-theme-primary: var(--primary-text-color) !important;
                       }
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:smoke-detector-variant
                 primary: CO / Smoke Alarm
                 card_mod: *style_section_header
@@ -998,6 +1054,7 @@ views:
                       - last_updated
                     vertical: true
                     card_mod: *style_card
+                    color: red
                   - type: tile
                     entity: binary_sensor.smoke_co_listener_37339_smoke
                     name: Smoke
@@ -1008,6 +1065,7 @@ views:
                       - last_changed
                     card_mod: *style_card
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:motion-sensor
                 primary: Check the Motion !!
                 card_mod: *style_section_header
@@ -1020,6 +1078,7 @@ views:
                   - last_changed
                 card_mod: *style_card
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:camera-wireless-outline
                 primary: Indoor Camera
                 card_mod: *style_section_header
@@ -1033,6 +1092,7 @@ views:
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:thermometer
                 primary: Sensors @ Entrance
                 card_mod: *style_section_header
@@ -1057,63 +1117,78 @@ views:
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.garage_backdoor
                     card_mod: *style_card
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.entry_room_side_window
                     card_mod: *style_card
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:thermometer
                 primary: Sensors for Living Room (LR) et. al.
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.living_room_back_window_right
                     card_mod: *style_card
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.living_room_back_window_left
                     card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.kitchen_window
                     card_mod: *style_card
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.mummy_papa_room_back_window
                     card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.garage_door
                     card_mod: *style_card
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.living_room_back_door
                     card_mod: *style_card
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:thermometer
                 primary: Upper Floor Sensors
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.master_bedroom_back_window_left
                     card_mod: *style_card
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.master_bedroom_back_window_right
                     card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.study_back_window
                     name: Study Window
                     card_mod: *style_card
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.upper_front_window
                     card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
+                    icon_color: white
                     entity: binary_sensor.office_side_window
                     name: Office Window
                     card_mod: *style_card
@@ -1122,6 +1197,7 @@ views:
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:cctv
                 primary: Cameras in Front of Home
                 card_mod: *style_section_header
@@ -1136,6 +1212,7 @@ views:
                 type: picture-entity
                 entity: camera.front_door_bell_camera
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:camera-marker-outline
                 primary: Cameras in the Garden
                 card_mod: *style_section_header
@@ -1161,6 +1238,7 @@ views:
       - type: grid
         cards:
           - type: custom:mushroom-template-card
+            color: white
             icon: mdi:robot-vacuum
             primary: Vacuum Cleaners
             grid_options:
@@ -1206,6 +1284,7 @@ views:
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
+                color: white
                 icon: mdi:printer-wireless
                 primary: HP DeskJet 3700 Series
                 card_mod: *style_section_header
@@ -1281,6 +1360,7 @@ views:
                   }
 
           - type: custom:mushroom-template-card
+            color: white
             icon: mdi:router-wireless
             primary: Google Nest Wifi Pro Router
             card_mod: *style_section_header
@@ -1291,12 +1371,14 @@ views:
             type: grid
             cards:
               - type: custom:mushroom-entity-card
+                icon_color: white
                 entity: sensor.onhub_wan_status
                 name: WAN Status
                 icon: mdi:wifi
                 fill_container: false
                 card_mod: *style_card
               - type: custom:mushroom-entity-card
+                icon_color: white
                 entity: sensor.google_wifi_status
                 name: Wifi Status
                 card_mod: *style_card
@@ -1315,10 +1397,12 @@ views:
                 hours_to_show: 40
                 card_mod: *style_card
               - type: custom:mushroom-entity-card
+                icon_color: white
                 entity: sensor.onhub_external_ip
                 name: External IP
                 card_mod: *style_card
               - type: custom:mushroom-entity-card
+                icon_color: white
                 entity: sensor.google_wifi_uptime
                 name: Up Time
                 card_mod: *style_card
@@ -1334,6 +1418,7 @@ views:
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
+                color: white
                 icon: phu:sprinkler
                 primary: Sprinklers
                 features_position: bottom
@@ -1432,6 +1517,7 @@ views:
         cards:
           - icon: mdi:chart-line
             type: custom:mushroom-template-card
+            color: white
             primary: Weather Charts !!
             multiline_secondary: false
             secondary: ''
@@ -1470,6 +1556,7 @@ views:
         cards:
           - icon: phu:intel-cpu
             type: custom:mushroom-template-card
+            color: white
             primary: Hardware
             multiline_secondary: false
             secondary: ''
@@ -1522,6 +1609,7 @@ views:
       - type: grid
         cards:
           - type: custom:mushroom-template-card
+            color: white
             primary: Persona
             icon: mdi:account-group
             features_position: bottom
