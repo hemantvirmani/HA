@@ -935,7 +935,7 @@ views:
             forecast_rows: 10
             sun_entity: sun.sun
             apparent_sensor: sensor.openweathermap_feels_like_temperature
-            aqi_sensor: sensor.airnow_air_quality_index
+            aqi_sensor: sensor.air_quality_index
             hourly_forecast: false
             card_mod: *style_teal
           - type: custom:horizon-card
