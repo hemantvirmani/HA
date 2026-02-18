@@ -13,18 +13,23 @@ My Dashboard Theme:
   mush-icon-border-radius: 6px
   mush-control-border-radius: 6px
   mush-chip-border-radius: 6px
+  # ── Global text & icon colors ──
+  primary-text-color: white
+  secondary-text-color: "rgba(255, 255, 255, 0.7)"
+  text-primary-color: white
+  state-icon-color: white
+  mush-icon-color: white
   # ── Dashboard colors ──
-  teal-bg: rgb(45, 95, 125)
-  section-header-bg: rgba(29, 78, 216, 0.95)
-  greeting-bg: rgba(2, 132, 199, 0.95)
+  card-bg: rgba(30, 15, 60, 0.75)
+  section-header-bg: rgba(45, 25, 120, 0.85)
+  greeting-bg: rgba(60, 35, 150, 0.85)
   alert-red-bg: rgb(220, 53, 69)
-  alert-red-alpha-bg: rgba(220, 53, 69, 0.95)
   # ── Bubble Card defaults ──
   bubble-button-border-radius: 7px
   bubble-sub-button-border-radius: 7px
   bubble-sub-icon-size: 13px
   bubble-border-radius: 7px
-  bubble-button-bg: rgba(52, 152, 220, 0.95)
+  bubble-button-bg: rgba(30, 15, 60, 0.75)
   bubble-icon-container-bg: "#0F2C64"
   bubble-icon-container-black: black
   # ── Sub-button colors ──

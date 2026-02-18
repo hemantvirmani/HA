@@ -12,28 +12,26 @@ _styles:
   section_header_hidden: &style_section_header_hidden
     style: |
       ha-card { background-color: var(--section-header-bg); display: none; }
-  teal_card: &style_teal
+  card: &style_card
     style: |
-      ha-card { background-color: var(--teal-bg); }
-  teal_hidden: &style_teal_hidden
+      ha-card { background-color: var(--card-bg); }
+  card_hidden: &style_card_hidden
     style: |
-      ha-card { background-color: var(--teal-bg); display: none; }
+      ha-card { background-color: var(--card-bg); display: none; }
   greeting: &style_greeting
     style: |
       ha-card { background-color: var(--greeting-bg); }
   alert_red: &style_alert_red
     style: |
       ha-card { background-color: var(--alert-red-bg); }
-  alert_red_alpha: &style_alert_red_alpha
-    style: |
-      ha-card { background-color: var(--alert-red-alpha-bg); }
   # Bubble card styles (string anchors for the 'styles:' property)
   bubble_media_player: &style_bubble_media |-
     .bubble-media-player-container {
-      background-color: var(--teal-bg) !important;
+      background-color: var(--card-bg) !important;
     }
     .bubble-icon-container {
       background: var(--bubble-icon-container-black);
+      color: white;
     }
     .bubble-sub-button-icon {
       --mdc-icon-size: var(--bubble-sub-icon-size) !important;
@@ -96,7 +94,6 @@ views:
               columns: full
             features_position: bottom
             icon: mdi:shield-home-outline
-            color: white
             card_mod: *style_greeting
           - type: custom:mushroom-template-card
             secondary: >-
@@ -104,7 +101,6 @@ views:
               states('input_text.weather_alert_remainder') | string }}
             multiline_secondary: true
             icon: mdi:weather-lightning-rainy
-            color: white
             tap_action:
               action: navigate
               navigation_path: '#pop-weather-details'
@@ -127,7 +123,6 @@ views:
                   Entrance & Living Room ({{lrtemp}}°F, {{lrhumidity}}%)
                 multiline_secondary: false
                 secondary: ''
-                color: white
                 features_position: bottom
                 card_mod: *style_section_header
               - type: custom:bubble-card
@@ -396,7 +391,6 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:home-floor-2
                 primary: Upper Floor
-                color: white
                 features_position: bottom
                 card_mod: *style_section_header
               - type: custom:bubble-card
@@ -650,7 +644,6 @@ views:
                 primary: Devices
                 secondary: Thermostat, TV, Sonos
                 multiline_secondary: true
-                color: white
                 features_position: bottom
                 card_mod: *style_section_header
               - type: custom:bubble-card
@@ -683,10 +676,11 @@ views:
                   navigation_path: '#pop-living-room-thermostat'
                 styles: |-
                   .bubble-color-background {
-                      background-color: var(--teal-bg) !important;
+                      background-color: var(--card-bg) !important;
                   }
                   .bubble-icon-container {
                       background: var(--bubble-icon-container-black);
+                      color: white;
                   }
                   .bubble-sub-button-icon {
                     --mdc-icon-size: var(--bubble-sub-icon-size) !important;
@@ -723,7 +717,6 @@ views:
                 icon: mdi:battery-70
                 primary: Battery Monitoring
                 multiline_secondary: false
-                color: white
                 card_mod: *style_section_header
               - square: false
                 type: grid
@@ -732,17 +725,17 @@ views:
                     entity: sensor.front_door_battery_2
                     name: Front Lock
                     vertical: true
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: tile
                     entity: sensor.garden_battery
                     name: Garden
                     vertical: true
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: tile
                     entity: sensor.garden2_battery
                     name: Garden2
                     vertical: true
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - square: false
                 type: grid
                 cards:
@@ -751,17 +744,17 @@ views:
                     name: Hemant
                     vertical: true
                     features_position: bottom
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: tile
                     entity: sensor.nupurs_iphone_battery_level
                     name: Nupur
                     vertical: true
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: tile
                     entity: sensor.prax_iphone_battery_level
                     name: Prax
                     vertical: true
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - square: false
                 type: grid
                 cards:
@@ -770,19 +763,19 @@ views:
                     name: iPad
                     vertical: true
                     features_position: bottom
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: tile
                     entity: sensor.backyard1_smart_hose_tap_timer_battery_level
                     name: BY1 Sprinklr
                     vertical: true
                     features_position: bottom
-                    card_mod: *style_teal_hidden
+                    card_mod: *style_card_hidden
                   - type: tile
                     entity: sensor.backyard_2_smart_hose_tap_timer_battery_level
                     name: BY 2 Sprinklr
                     vertical: true
                     features_position: bottom
-                    card_mod: *style_teal_hidden
+                    card_mod: *style_card_hidden
             grid_options:
               columns: full
           - type: vertical-stack
@@ -793,7 +786,7 @@ views:
                 card_mod:
                   style: |
                     ha-card { 
-                      background-color: var(--teal-bg);
+                      background-color: var(--card-bg);
                     }
                     ha-dialog {
                       max-height: 600px !important;
@@ -826,7 +819,7 @@ views:
                 card_mod:
                   style: |
                     ha-card { 
-                      background-color: var(--teal-bg);
+                      background-color: var(--card-bg);
                     }
           - type: vertical-stack
             cards:
@@ -868,7 +861,7 @@ views:
                 grid_options:
                   columns: full
                 fill_container: true
-                card_mod: *style_alert_red_alpha
+                card_mod: *style_alert_red
             title: Weather Alerts
             grid_options:
               columns: 12
@@ -880,7 +873,6 @@ views:
             primary: Weather
             secondary: ''
             multiline_secondary: false
-            color: white
             features_position: bottom
             card_mod: *style_section_header
             grid_options:
@@ -897,7 +889,7 @@ views:
                 name: Wind Speed
                 show:
                   labels: true
-                card_mod: *style_teal
+                card_mod: *style_card
               - type: custom:mini-graph-card
                 entities:
                   - sensor.air_quality_index
@@ -906,7 +898,7 @@ views:
                 font_size: 75
                 show:
                   labels: true
-                card_mod: *style_teal
+                card_mod: *style_card
           - type: horizontal-stack
             cards:
               - type: custom:mini-graph-card
@@ -918,7 +910,7 @@ views:
                 name: Outside Temp
                 show:
                   labels: true
-                card_mod: *style_teal
+                card_mod: *style_card
               - type: custom:mini-graph-card
                 entities:
                   - sensor.home_humidity
@@ -928,7 +920,7 @@ views:
                 name: Outside Humidity
                 show:
                   labels: true
-                card_mod: *style_teal
+                card_mod: *style_card
           - type: custom:clock-weather-card
             entity: weather.openweathermap
             animated_icon: true
@@ -937,7 +929,7 @@ views:
             apparent_sensor: sensor.openweathermap_feels_like_temperature
             aqi_sensor: sensor.air_quality_index
             hourly_forecast: false
-            card_mod: *style_teal
+            card_mod: *style_card
           - type: custom:horizon-card
             title: Sun & Moon
             moon: true
@@ -954,7 +946,7 @@ views:
               moonrise: true
               moonset: true
               moon_phase: true
-            card_mod: *style_teal
+            card_mod: *style_card
   - title: Security
     icon: mdi:shield-home-outline
     subview: false
@@ -971,7 +963,6 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:shield-home
                 primary: Ring Alarm
-                color: white
                 card_mod: *style_section_header
               - states:
                   - arm_home
@@ -986,7 +977,7 @@ views:
                       --mdc-button-outline-color: rgba(240, 240, 240, 255);
                       --paper-font-subhead_-_font-size: 1.5rem;
                       --mdc-shape-small: 100%;
-                      background-color: var(--teal-bg);
+                      background-color: var(--card-bg);
                     }
                     mwc-button:
                     $: | 
@@ -996,7 +987,6 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:smoke-detector-variant
                 primary: CO / Smoke Alarm
-                color: white
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
@@ -1007,7 +997,7 @@ views:
                       - state
                       - last_updated
                     vertical: true
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: tile
                     entity: binary_sensor.smoke_co_listener_37339_smoke
                     name: Smoke
@@ -1016,11 +1006,10 @@ views:
                     state_content:
                       - state
                       - last_changed
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - type: custom:mushroom-template-card
                 icon: mdi:motion-sensor
                 primary: Check the Motion !!
-                color: white
                 card_mod: *style_section_header
               - type: tile
                 entity: binary_sensor.motion_detector_stairs
@@ -1029,7 +1018,7 @@ views:
                 state_content:
                   - state
                   - last_changed
-                card_mod: *style_teal
+                card_mod: *style_card
               - type: custom:mushroom-template-card
                 icon: mdi:camera-wireless-outline
                 primary: Indoor Camera
@@ -1046,7 +1035,6 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:thermometer
                 primary: Sensors @ Entrance
-                color: white
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
@@ -1057,7 +1045,7 @@ views:
                       - state
                       - last_changed
                     color: teal
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: tile
                     entity: binary_sensor.front_window
                     state_content:
@@ -1065,72 +1053,70 @@ views:
                       - last_changed
                     show_entity_picture: false
                     color: teal
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.garage_backdoor
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.entry_room_side_window
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - type: custom:mushroom-template-card
                 icon: mdi:thermometer
                 primary: Sensors for Living Room (LR) et. al.
-                color: white
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.living_room_back_window_right
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.living_room_back_window_left
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.kitchen_window
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.mummy_papa_room_back_window
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.garage_door
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.living_room_back_door
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - type: custom:mushroom-template-card
                 icon: mdi:thermometer
                 primary: Upper Floor Sensors
-                color: white
                 card_mod: *style_section_header
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.master_bedroom_back_window_left
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.master_bedroom_back_window_right
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.study_back_window
                     name: Study Window
-                    card_mod: *style_teal
+                    card_mod: *style_card
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.upper_front_window
-                    card_mod: *style_teal
+                    card_mod: *style_card
               - type: horizontal-stack
                 cards:
                   - type: custom:mushroom-entity-card
                     entity: binary_sensor.office_side_window
                     name: Office Window
-                    card_mod: *style_teal
+                    card_mod: *style_card
       - type: grid
         cards:
           - type: vertical-stack
@@ -1138,7 +1124,6 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:cctv
                 primary: Cameras in Front of Home
-                color: white
                 card_mod: *style_section_header
               - show_state: true
                 show_name: true
@@ -1153,7 +1138,6 @@ views:
               - type: custom:mushroom-template-card
                 icon: mdi:camera-marker-outline
                 primary: Cameras in the Garden
-                color: white
                 card_mod: *style_section_header
               - show_state: true
                 show_name: true
@@ -1181,7 +1165,6 @@ views:
             primary: Vacuum Cleaners
             grid_options:
               columns: full
-            color: white
             features_position: bottom
             card_mod: *style_section_header
           - type: custom:mushroom-vacuum-card
@@ -1201,7 +1184,7 @@ views:
             icon_type: entity-picture
             tap_action:
               action: more-info
-            card_mod: *style_teal
+            card_mod: *style_card
           - type: custom:mushroom-vacuum-card
             entity: vacuum.samba
             icon_animation: true
@@ -1219,13 +1202,12 @@ views:
             icon_type: entity-picture
             tap_action:
               action: more-info
-            card_mod: *style_teal
+            card_mod: *style_card
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 icon: mdi:printer-wireless
                 primary: HP DeskJet 3700 Series
-                color: white
                 card_mod: *style_section_header
               - type: custom:bubble-card
                 card_type: button
@@ -1301,7 +1283,6 @@ views:
           - type: custom:mushroom-template-card
             icon: mdi:router-wireless
             primary: Google Nest Wifi Pro Router
-            color: white
             card_mod: *style_section_header
             fill_container: true
             grid_options:
@@ -1314,33 +1295,33 @@ views:
                 name: WAN Status
                 icon: mdi:wifi
                 fill_container: false
-                card_mod: *style_teal
+                card_mod: *style_card
               - type: custom:mushroom-entity-card
                 entity: sensor.google_wifi_status
                 name: Wifi Status
-                card_mod: *style_teal
+                card_mod: *style_card
               - graph: line
                 type: sensor
                 entity: sensor.onhub_packet_upload_speed
                 name: Upload Speed
                 detail: 2
                 hours_to_show: 48
-                card_mod: *style_teal
+                card_mod: *style_card
               - graph: line
                 type: sensor
                 entity: sensor.onhub_packet_download_speed
                 name: Download Speed
                 detail: 2
                 hours_to_show: 40
-                card_mod: *style_teal
+                card_mod: *style_card
               - type: custom:mushroom-entity-card
                 entity: sensor.onhub_external_ip
                 name: External IP
-                card_mod: *style_teal
+                card_mod: *style_card
               - type: custom:mushroom-entity-card
                 entity: sensor.google_wifi_uptime
                 name: Up Time
-                card_mod: *style_teal
+                card_mod: *style_card
             columns: 2
           - type: sensor
             entity: sensor.google_wifi_last_restart
@@ -1349,13 +1330,12 @@ views:
             hours_to_show: 48
             grid_options:
               columns: full
-            card_mod: *style_teal
+            card_mod: *style_card
           - type: vertical-stack
             cards:
               - type: custom:mushroom-template-card
                 icon: phu:sprinkler
                 primary: Sprinklers
-                color: white
                 features_position: bottom
                 card_mod: *style_section_header_hidden
               - square: false
@@ -1365,12 +1345,12 @@ views:
                     entity: switch.backyard1_zone_zone
                     features_position: bottom
                     vertical: false
-                    card_mod: *style_teal_hidden
+                    card_mod: *style_card_hidden
                   - type: tile
                     entity: switch.backyard_2_sprinklr_zone_zone
                     features_position: bottom
                     vertical: false
-                    card_mod: *style_teal_hidden
+                    card_mod: *style_card_hidden
                 columns: 2
       - type: grid
         cards:
@@ -1446,6 +1426,7 @@ views:
     max_columns: 3
     path: watchtower
     icon: mdi:binoculars
+    cards: []
     sections:
       - type: grid
         cards:
@@ -1453,7 +1434,6 @@ views:
             type: custom:mushroom-template-card
             primary: Weather Charts !!
             multiline_secondary: false
-            color: white
             secondary: ''
             card_mod: *style_section_header
             grid_options:
@@ -1471,7 +1451,7 @@ views:
               - entity: sensor.openweathermap_feels_like_temperature
                 name: Outside Temperature
               - entity: sensor.living_room_temperature
-            card_mod: *style_teal
+            card_mod: *style_card
           - type: custom:apexcharts-card
             graph_span: 3d
             span:
@@ -1485,14 +1465,13 @@ views:
               - entity: sensor.openweathermap_humidity
                 name: Outside Humidity
               - entity: sensor.living_room_humidity
-            card_mod: *style_teal
+            card_mod: *style_card
       - type: grid
         cards:
           - icon: phu:intel-cpu
             type: custom:mushroom-template-card
             primary: Hardware
             multiline_secondary: false
-            color: white
             secondary: ''
             card_mod: *style_section_header
             grid_options:
@@ -1503,28 +1482,28 @@ views:
             entity: sensor.system_monitor_memory_use_percent
             name: Memory
             hours_to_show: 48
-            card_mod: *style_teal
+            card_mod: *style_card
           - graph: line
             type: sensor
             entity: sensor.system_monitor_processor_use
             detail: 2
             name: CPU
             hours_to_show: 48
-            card_mod: *style_teal
+            card_mod: *style_card
           - graph: line
             type: sensor
             detail: 2
             entity: sensor.system_monitor_processor_temperature
             hours_to_show: 48
             name: CPU Temp
-            card_mod: *style_teal
+            card_mod: *style_card
           - graph: line
             type: sensor
             entity: sensor.system_monitor_disk_use_percent
             detail: 2
             hours_to_show: 48
             name: Disk Usage
-            card_mod: *style_teal
+            card_mod: *style_card
           - graph: none
             type: sensor
             detail: 2
@@ -1532,145 +1511,7 @@ views:
             name: Last Boot
             grid_options:
               columns: full
-            card_mod: *style_teal
-      - type: grid
-        cards:
-          - icon: mdi:air-filter
-            type: custom:mushroom-template-card
-            primary: Air Pollution Data
-            multiline_secondary: false
-            secondary: ''
-            grid_options:
-              columns: full
-            color: white
-            features_position: bottom
-            card_mod: *style_section_header
-          - type: vertical-stack
-            cards:
-              - type: gauge
-                entity: sensor.openweathermap_pm2_5
-                name: PM 2.5
-                unit: µg/m³
-                min: 0
-                max: 200
-                segments:
-                  - from: 0
-                    color: '#00e400'
-                  - from: 12.1
-                    color: '#ffff00'
-                  - from: 35.5
-                    color: '#ff7e00'
-                  - from: 55.5
-                    color: '#ff0000'
-                  - from: 150.5
-                    color: '#8f3f97'
-                  - from: 250.5
-                    color: '#7e0023'
-              - type: gauge
-                entity: sensor.openweathermap_pm10
-                name: PM 10
-                unit: µg/m³
-                min: 0
-                max: 200
-                segments:
-                  - from: 0
-                    color: '#00e400'
-                  - from: 55
-                    color: '#ffff00'
-                  - from: 155
-                    color: '#ff7e00'
-                  - from: 255
-                    color: '#ff0000'
-                  - from: 355
-                    color: '#8f3f97'
-                  - from: 425
-                    color: '#7e0023'
-              - type: gauge
-                entity: sensor.openweathermap_carbon_monoxide
-                name: Carbon Monoxide (CO)
-                unit: µg/m³
-                min: 0
-                max: 10000
-                segments:
-                  - from: 0
-                    color: '#00e400'
-                  - from: 4900
-                    color: '#ffff00'
-                  - from: 9400
-                    color: '#ff7e00'
-                  - from: 12400
-                    color: '#ff0000'
-              - type: gauge
-                entity: sensor.openweathermap_sulphur_dioxide
-                name: Sulphur Dioxide (SO₂)
-                unit: µg/m³
-                min: 0
-                max: 300
-                segments:
-                  - from: 0
-                    color: '#00e400'
-                  - from: 81
-                    color: '#ffff00'
-                  - from: 181
-                    color: '#ff7e00'
-                  - from: 305
-                    color: '#ff0000'
-              - type: gauge
-                entity: sensor.openweathermap_nitrogen_monoxide
-                name: Nitrogen Monoxide (NO)
-                unit: µg/m³
-                min: 0
-                max: 200
-                segments:
-                  - from: 0
-                    color: '#00e400'
-                  - from: 50
-                    color: '#ffff00'
-                  - from: 100
-                    color: '#ff7e00'
-                  - from: 150
-                    color: '#ff0000'
-                  - from: 200
-                    color: '#8f3f97'
-              - type: gauge
-                entity: sensor.openweathermap_nitrogen_dioxide
-                name: Nitrogen Dioxide (NO₂)
-                unit: µg/m³
-                min: 0
-                max: 400
-                segments:
-                  - from: 0
-                    color: '#00e400'
-                  - from: 41
-                    color: '#ffff00'
-                  - from: 81
-                    color: '#ff7e00'
-                  - from: 121
-                    color: '#ff0000'
-                  - from: 201
-                    color: '#8f3f97'
-                  - from: 401
-                    color: '#7e0023'
-              - type: gauge
-                entity: sensor.openweathermap_ozone
-                name: Ozone (O₃)
-                unit: µg/m³
-                min: 0
-                max: 200
-                segments:
-                  - from: 0
-                    color: '#00e400'
-                  - from: 61
-                    color: '#ffff00'
-                  - from: 121
-                    color: '#ff7e00'
-                  - from: 169
-                    color: '#ff0000'
-                  - from: 217
-                    color: '#8f3f97'
-                  - from: 405
-                    color: '#7e0023'
-    cards: []
+            card_mod: *style_card
   - title: Extras
     icon: mdi:minus-box
     badges: []
@@ -1683,7 +1524,6 @@ views:
           - type: custom:mushroom-template-card
             primary: Persona
             icon: mdi:account-group
-            color: white
             features_position: bottom
             card_mod: *style_section_header
             grid_options:
@@ -1692,7 +1532,7 @@ views:
             cards:
               - type: custom:stack-in-card
                 mode: horizontal
-                card_mod: *style_teal
+                card_mod: *style_card
                 cards:
                   - type: custom:mushroom-person-card
                     entity: person.hemant_virmani
@@ -1775,7 +1615,7 @@ views:
                     alignment: justify
               - type: custom:stack-in-card
                 mode: horizontal
-                card_mod: *style_teal
+                card_mod: *style_card
                 cards:
                   - type: custom:mushroom-person-card
                     entity: person.nupur
@@ -1858,7 +1698,7 @@ views:
                     alignment: justify
               - type: custom:stack-in-card
                 mode: horizontal
-                card_mod: *style_teal
+                card_mod: *style_card
                 cards:
                   - type: custom:mushroom-person-card
                     entity: person.prax
