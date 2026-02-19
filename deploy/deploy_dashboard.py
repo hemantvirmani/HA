@@ -6,7 +6,7 @@ This script deploys the new dashboard YAML file to your Home Assistant server
 and optionally reloads the YAML configuration.
 
 Usage:
-    python deploy_dashboard.py [--host HOST] [--user USER] [--key KEY] [--port PORT] [--no-reload]
+    python deploy/deploy_dashboard.py [--host HOST] [--user USER] [--key KEY] [--port PORT] [--no-reload]
 
 Requirements:
     - Python 3.6+
@@ -171,23 +171,28 @@ class HomeAssistantDeployer:
 
 
 def main():
+    # Resolve paths relative to script location (repo root)
+    script_dir = Path(__file__).resolve().parent
+    repo_root = script_dir.parent
+    default_local = str(repo_root / "my-dashboard.yaml")
+
     parser = argparse.ArgumentParser(
         description="Deploy Home Assistant dashboard via SSH",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Deploy with SSH key
-  python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
-  
+  # Deploy with SSH key (run from repo root)
+  python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
+
   # Deploy with password
-  python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --password mypassword
-  
+  python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --password mypassword
+
   # Deploy without auto-reload
-  python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa --no-reload
-  
+  python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-reload
+
   # Deploy custom dashboard file to custom location
-  python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa \\
-                              --local new.dashboard.yaml --remote /config/lovelace/ui-lovelace.yaml
+  python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa \\
+                              --local my-dashboard.yaml --remote /config/lovelace/ui-lovelace.yaml
         """
     )
     
@@ -196,8 +201,8 @@ Examples:
     parser.add_argument('--key', help='Path to SSH private key file')
     parser.add_argument('--password', help='SSH password (alternative to key)')
     parser.add_argument('--port', type=int, default=22, help='SSH port (default: 22)')
-    parser.add_argument('--local', default='../my-dashboard.yaml', 
-                       help='Local dashboard file to deploy (default: ../my-dashboard.yaml)')
+    parser.add_argument('--local', default=default_local,
+                       help=f'Local dashboard file to deploy (default: {default_local})')
     parser.add_argument('--remote', 
                        help='Remote path for dashboard file (default: /config/lovelace/ui-lovelace.yaml)')
     parser.add_argument('--no-reload', action='store_true',

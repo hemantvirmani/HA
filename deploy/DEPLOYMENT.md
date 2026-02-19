@@ -25,7 +25,7 @@ This guide explains how to deploy your Home Assistant dashboard using the Python
 #### Option A: Install Directly (Quick Start)
 
 ```bash
-pip install -r requirements.txt
+pip install -r deploy/requirements.txt
 ```
 
 #### Option B: Use Virtual Environment (Recommended)
@@ -41,7 +41,7 @@ python -m venv venv
 venv\Scripts\activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -r deploy/requirements.txt
 
 # When done, deactivate
 deactivate
@@ -56,7 +56,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -r deploy/requirements.txt
 
 # When done, deactivate
 deactivate
@@ -70,20 +70,20 @@ deactivate
 
 **Note:** After activating the virtual environment, you can run the deployment script normally:
 ```bash
-python deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
 ```
 
 ### Deploy Your Dashboard
 
 ```bash
 # With SSH key
-python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
 
 # With password
-python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --password mypassword
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --password mypassword
 
 # Without auto-reload
-python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa --no-reload
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa --no-reload
 ```
 
 ---
@@ -109,7 +109,7 @@ The Python deployment script provides following features:
 --key KEY_FILE     Path to SSH private key file
 --password PASS    SSH password (alternative to key)
 --port PORT        SSH port (default: 22)
---local FILE       Local dashboard file (default: ../my-dashboard.yaml)
+--local FILE       Local dashboard file (default: my-dashboard.yaml at repo root)
 --remote PATH      Remote path for dashboard (default: /config/lovelace/ui-lovelace.yaml)
 --no-reload        Skip automatic YAML config reload
 --no-backup        Skip backup of existing dashboard
@@ -119,20 +119,20 @@ The Python deployment script provides following features:
 
 ```bash
 # Basic deployment with SSH key
-python deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
 
 # Deployment with password
-python deploy_dashboard.py --host 192.168.1.100 --user root --password mypassword
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --password mypassword
 
 # Deploy to custom location
-python deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa \
-  --local custom.dashboard.yaml --remote /config/lovelace/dashboard-custom.yaml
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa \
+  --local my-dashboard.yaml --remote /config/lovelace/dashboard-custom.yaml
 
 # Deploy without backup
-python deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-backup
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-backup
 
 # Deploy without auto-reload
-python deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-reload
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-reload
 ```
 
 ---
@@ -372,7 +372,7 @@ docker restart homeassistant
 4. Validate YAML syntax:
    ```bash
    # Using Python
-   python -c "import yaml; yaml.safe_load(open('new.dashboard.yaml'))"
+   python -c "import yaml; yaml.safe_load(open('my-dashboard.yaml'))"
    ```
 
 ### YAML Reload Issues
@@ -390,7 +390,7 @@ docker restart homeassistant
 **Solutions**:
 1. Check YAML indentation
 2. Verify no duplicate keys
-3. Use a YAML linter: `yamllint new.dashboard.yaml`
+3. Use a YAML linter: `yamllint my-dashboard.yaml`
 4. Test in Home Assistant UI:
    - Settings → YAML Configuration → Validate
 
@@ -420,12 +420,12 @@ Deploy different dashboards by specifying different remote paths:
 
 ```bash
 # Main dashboard
-python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa \
-  --local new.dashboard.yaml --remote /config/lovelace/ui-lovelace.yaml
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa \
+  --local my-dashboard.yaml --remote /config/lovelace/ui-lovelace.yaml
 
 # Custom dashboard
-python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa \
-  --local custom.dashboard.yaml --remote /config/lovelace/dashboard-custom.yaml
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa \
+  --local my-dashboard.yaml --remote /config/lovelace/dashboard-custom.yaml
 ```
 
 ### Deployment with Validation
@@ -434,11 +434,11 @@ Add YAML validation before deployment:
 
 ```bash
 # Validate YAML first
-python -c "import yaml; yaml.safe_load(open('new.dashboard.yaml'))"
+python -c "import yaml; yaml.safe_load(open('my-dashboard.yaml'))"
 
 # Deploy if validation passes
 if [ $? -eq 0 ]; then
-    python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
+    python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
 fi
 ```
 
@@ -454,14 +454,14 @@ Create a simple deployment workflow:
 git pull origin main
 
 # Validate YAML
-python -c "import yaml; yaml.safe_load(open('new.dashboard.yaml'))"
+python -c "import yaml; yaml.safe_load(open('my-dashboard.yaml'))"
 if [ $? -ne 0 ]; then
     echo "YAML validation failed!"
     exit 1
 fi
 
 # Deploy
-python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
 ```
 
 ### Monitoring Deployment
@@ -471,7 +471,7 @@ Add logging to track deployments:
 ```bash
 # Deploy with timestamp and logging
 echo "[$(date)] Deploying dashboard..." >> deployment.log
-python deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa 2>&1 | tee -a deployment.log
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa 2>&1 | tee -a deployment.log
 ```
 
 ---
