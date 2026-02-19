@@ -76,11 +76,14 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/
 ### Deploy Your Dashboard
 
 ```bash
-# With SSH key
+# Dashboard only
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
 
+# Dashboard + theme
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa --theme
+
 # With password
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --password mypassword
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --password mypassword --theme
 
 # Without auto-reload
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa --no-reload
@@ -94,10 +97,11 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --ke
 
 The Python deployment script provides following features:
 
-- ✅ **Automatic backup** of existing dashboard before deployment
+- ✅ **Automatic backup** of existing files before deployment
+- ✅ **Dashboard + theme deployment** (theme via `--theme` flag)
 - ✅ **Secure file transfer** via SSH/SFTP
 - ✅ **Automatic YAML reload** (optional)
-- ✅ **Multiple authentication methods** (SSH key or password)
+- ✅ **Multiple authentication methods** (SSH key or password, RSA/Ed25519/ECDSA)
 - ✅ **Cross-platform support** (works on Windows, Linux, Mac)
 - ✅ **Detailed error messages** and status updates
 
@@ -106,27 +110,34 @@ The Python deployment script provides following features:
 ```
 --host HOST        Home Assistant server hostname or IP (required)
 --user USER        SSH username (required)
---key KEY_FILE     Path to SSH private key file
+--key KEY_FILE     Path to SSH private key file (RSA, Ed25519, ECDSA)
 --password PASS    SSH password (alternative to key)
 --port PORT        SSH port (default: 22)
 --local FILE       Local dashboard file (default: my-dashboard.yaml at repo root)
 --remote PATH      Remote path for dashboard (default: /config/lovelace/ui-lovelace.yaml)
+--theme            Also deploy the theme file
+--theme-local FILE Local theme file (default: themes/my_dashboard_theme.yaml)
+--theme-remote PATH Remote path for theme (default: /config/themes/my_dashboard_theme.yaml)
 --no-reload        Skip automatic YAML config reload
---no-backup        Skip backup of existing dashboard
+--no-backup        Skip backup of existing files
 ```
 
 ### Usage Examples
 
 ```bash
-# Basic deployment with SSH key
+# Basic deployment (dashboard only)
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
+
+# Deploy dashboard + theme
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --theme
 
 # Deployment with password
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --password mypassword
 
-# Deploy to custom location
+# Deploy to custom locations
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa \
-  --local my-dashboard.yaml --remote /config/lovelace/dashboard-custom.yaml
+  --local my-dashboard.yaml --remote /config/lovelace/dashboard-custom.yaml \
+  --theme --theme-remote /config/themes/my_custom_theme.yaml
 
 # Deploy without backup
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-backup
