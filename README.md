@@ -12,14 +12,15 @@ HA/
 │   └── my_dashboard_theme.yaml# Theme CSS variables and colors
 ├── deploy/                    # Deployment tools
 │   ├── deploy_dashboard.py     # Deployment script for pushing changes to HA
-│   └── DEPLOYMENT.md          # Complete deployment guide with troubleshooting
+│   ├── DEPLOYMENT.md          # Complete deployment guide with troubleshooting
+│   └── requirements.txt      # Python dependencies for deployment
 ├── config/                    # Home Assistant configuration snippets
 │   └── aqi_template_sensor.yaml # AQI sensor template configuration
+├── opt/                       # Infrastructure configuration
+│   └── docker-compose.yaml    # Docker compose configuration
 ├── README.md                  # This file
 ├── .clinerules               # Coding conventions and best practices
-├── .gitignore                # Git ignore rules
-├── docker-compose.yaml        # Docker compose configuration
-└── requirements.txt          # Python dependencies for deployment
+└── .gitignore                # Git ignore rules
 ```
 
 ### Key Files
@@ -32,6 +33,8 @@ HA/
 | `deploy/deploy_dashboard.py` | Deployment script for pushing changes to HA |
 | `deploy/DEPLOYMENT.md` | Complete deployment guide with troubleshooting |
 | `config/aqi_template_sensor.yaml` | AQI sensor template configuration |
+| `opt/docker-compose.yaml` | Docker compose configuration |
+| `deploy/requirements.txt` | Python dependencies for deployment |
 
 ## 🏷️ Tagging / Checkpoints
 
