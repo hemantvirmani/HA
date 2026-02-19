@@ -9,7 +9,8 @@ HA/
 ├── my-dashboard.yaml           # Main dashboard configuration (edit this file)
 ├── themes/                    # Theme resources
 │   ├── bg.png                 # Dashboard background image
-│   └── my_dashboard_theme.yaml# Theme CSS variables and colors
+│   ├── my_dashboard_theme.yaml         # Production theme
+│   └── my_dashboard_theme_staging.yaml # Staging theme (same styles, different key name)
 ├── deploy/                    # Deployment tools
 │   ├── deploy_dashboard.py     # Deployment script for pushing changes to HA
 │   ├── DEPLOYMENT.md          # Complete deployment guide with troubleshooting
@@ -28,7 +29,8 @@ HA/
 | File | Purpose |
 |------|---------|
 | `my-dashboard.yaml` | Active working dashboard (edit this file) |
-| `themes/my_dashboard_theme.yaml` | Dashboard theme with CSS variables and colors |
+| `themes/my_dashboard_theme.yaml` | Production theme with CSS variables and colors |
+| `themes/my_dashboard_theme_staging.yaml` | Staging theme (copy of prod, different key name) |
 | `themes/bg.png` | Background image for dashboard |
 | `deploy/deploy_dashboard.py` | Deployment script for pushing changes to HA |
 | `deploy/DEPLOYMENT.md` | Complete deployment guide with troubleshooting |
@@ -52,22 +54,34 @@ HA/
 
 ## 🔧 Development Workflow
 
-1. Edit `my-dashboard.yaml` locally
-2. Validate YAML syntax
-3. Deploy with `python deploy/deploy_dashboard.py` (see [deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md) for details)
-4. Verify in Home Assistant UI
-5. Tag checkpoint: `git tag -a dashboard-vN -m "description"`
-6. If deploying live: `git tag -a live-vN -m "description"`
-7. Push all tags to remote: `git push origin --tags`
+1. Edit `my-dashboard.yaml` and/or `themes/my_dashboard_theme.yaml` locally
+2. If theme changed, sync changes to `themes/my_dashboard_theme_staging.yaml` (same values, different top-level key)
+3. Validate YAML syntax
+4. Deploy to staging: `python deploy/deploy_dashboard.py --host ... --stage`
+5. Verify in Home Assistant UI under "My Dashboard (Staging)"
+6. Promote to production: `python deploy/deploy_dashboard.py --host ... --promote`
+7. Verify production dashboard
+8. Tag checkpoint: `git tag -a dashboard-vN -m "description"`
+9. If deploying live: `git tag -a live-vN -m "description"`
+10. Push all tags to remote: `git push origin --tags`
 
 ## 🚀 Quick Deploy
 
 ```bash
-# Deploy to Home Assistant
+# Deploy to staging (test changes first)
+python deploy/deploy_dashboard.py --host YOUR_HA_IP --user root --key ~/.ssh/id_rsa --stage
+
+# Promote to production (after verifying staging)
+python deploy/deploy_dashboard.py --host YOUR_HA_IP --user root --key ~/.ssh/id_rsa --promote
+
+# Direct production deploy (dashboard only)
 python deploy/deploy_dashboard.py --host YOUR_HA_IP --user root --key ~/.ssh/id_rsa
+
+# Direct production deploy (dashboard + theme)
+python deploy/deploy_dashboard.py --host YOUR_HA_IP --user root --key ~/.ssh/id_rsa --theme
 ```
 
-> **Need detailed setup instructions?** See [deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md) for venv setup, SSH configuration, and troubleshooting.
+> **Need detailed setup instructions?** See [deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md) for venv setup, SSH configuration, staging/promote workflow, and troubleshooting.
 
 ## 📚 Documentation
 

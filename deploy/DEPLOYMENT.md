@@ -6,10 +6,11 @@ This guide explains how to deploy your Home Assistant dashboard using the Python
 
 1. [Quick Start](#quick-start)
 2. [Deployment Script](#deployment-script)
-3. [YAML Configuration Reload](#yaml-configuration-reload)
-4. [SSH Setup](#ssh-setup)
-5. [Troubleshooting](#troubleshooting)
-6. [Advanced Usage](#advanced-usage)
+3. [Staging & Promotion Workflow](#staging--promotion-workflow)
+4. [YAML Configuration Reload](#yaml-configuration-reload)
+5. [SSH Setup](#ssh-setup)
+6. [Troubleshooting](#troubleshooting)
+7. [Advanced Usage](#advanced-usage)
 
 ---
 
@@ -76,17 +77,17 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/
 ### Deploy Your Dashboard
 
 ```bash
-# Dashboard only
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa
+# Deploy to staging (test changes first)
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --stage
 
-# Dashboard + theme
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa --theme
+# Promote to production (after verifying staging)
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --promote
 
-# With password
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --password mypassword --theme
+# Direct production deploy (dashboard only)
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
 
-# Without auto-reload
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --key ~/.ssh/id_rsa --no-reload
+# Direct production deploy (dashboard + theme)
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --theme
 ```
 
 ---
@@ -97,8 +98,10 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --ke
 
 The Python deployment script provides following features:
 
+- ✅ **Staging/production workflow** (`--stage` and `--promote` flags)
 - ✅ **Automatic backup** of existing files before deployment
-- ✅ **Dashboard + theme deployment** (theme via `--theme` flag)
+- ✅ **Dashboard + theme deployment** (theme via `--theme`, `--stage`, or `--promote`)
+- ✅ **In-memory theme name replacement** for staging (local files never modified)
 - ✅ **Secure file transfer** via SSH/SFTP
 - ✅ **Automatic YAML reload** (optional)
 - ✅ **Multiple authentication methods** (SSH key or password, RSA/Ed25519/ECDSA)
@@ -108,36 +111,37 @@ The Python deployment script provides following features:
 ### Script Options
 
 ```
---host HOST        Home Assistant server hostname or IP (required)
---user USER        SSH username (required)
---key KEY_FILE     Path to SSH private key file (RSA, Ed25519, ECDSA)
---password PASS    SSH password (alternative to key)
---port PORT        SSH port (default: 22)
---local FILE       Local dashboard file (default: my-dashboard.yaml at repo root)
---remote PATH      Remote path for dashboard (default: /config/lovelace/ui-lovelace.yaml)
---theme            Also deploy the theme file
---theme-local FILE Local theme file (default: themes/my_dashboard_theme.yaml)
---theme-remote PATH Remote path for theme (default: /config/themes/my_dashboard_theme.yaml)
---no-reload        Skip automatic YAML config reload
---no-backup        Skip backup of existing files
+--host HOST              Home Assistant server hostname or IP (required)
+--user USER              SSH username (required)
+--key KEY_FILE           Path to SSH private key file (RSA, Ed25519, ECDSA)
+--password PASS          SSH password (alternative to key)
+--port PORT              SSH port (default: 22)
+--local FILE             Local dashboard file (default: my-dashboard.yaml at repo root)
+--remote PATH            Remote path for dashboard (default: /config/lovelace/my-dashboard.yaml)
+--theme                  Also deploy the theme file (production mode only)
+--theme-local FILE       Local prod theme file (default: themes/my_dashboard_theme.yaml)
+--theme-remote PATH      Remote path for theme (default: /config/themes/my_dashboard_theme.yaml)
+--theme-staging-local FILE  Local staging theme file (default: themes/my_dashboard_theme_staging.yaml)
+--stage                  Deploy to staging (dashboard + staging theme, mutually exclusive with --promote)
+--promote                Promote to production (dashboard + prod theme, mutually exclusive with --stage)
+--no-reload              Skip automatic YAML config reload
+--no-backup              Skip backup of existing files
 ```
 
 ### Usage Examples
 
 ```bash
-# Basic deployment (dashboard only)
+# Deploy to staging (recommended first step)
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --stage
+
+# Promote to production (after verifying staging)
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --promote
+
+# Direct production deploy (dashboard only)
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
 
-# Deploy dashboard + theme
+# Direct production deploy (dashboard + theme)
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --theme
-
-# Deployment with password
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --password mypassword
-
-# Deploy to custom locations
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa \
-  --local my-dashboard.yaml --remote /config/lovelace/dashboard-custom.yaml \
-  --theme --theme-remote /config/themes/my_custom_theme.yaml
 
 # Deploy without backup
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-backup
@@ -145,6 +149,75 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/
 # Deploy without auto-reload
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-reload
 ```
+
+---
+
+## Staging & Promotion Workflow
+
+The deploy script supports a staging/production workflow for testing dashboard changes before going live.
+
+### How It Works
+
+- **Two dashboards** on the HA server: "My Dashboard" (prod) and "My Dashboard (Staging)"
+- **Two themes**: "My Dashboard Theme" (prod) and "My Dashboard Theme - Staging"
+- `--stage` reads the dashboard YAML, replaces theme references in-memory, and uploads to the staging path. Local files are never modified.
+- `--promote` deploys local files as-is to production paths (dashboard + prod theme)
+- Both dashboards always exist in the HA sidebar
+
+### Deploy to Staging
+
+```bash
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --stage
+```
+
+This will:
+1. Read `my-dashboard.yaml` and replace all `My Dashboard Theme` references with `My Dashboard Theme - Staging` in memory
+2. Upload the modified dashboard to `/config/lovelace/my-dashboard-staging.yaml`
+3. Upload `themes/my_dashboard_theme_staging.yaml` to `/config/themes/`
+
+### Promote to Production
+
+After verifying staging looks correct:
+
+```bash
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --promote
+```
+
+This deploys local files as-is (with prod theme name) to production paths, including the theme file. Staging remains untouched for comparison.
+
+### Typical Workflow
+
+1. Make changes locally to `my-dashboard.yaml` and/or `themes/my_dashboard_theme.yaml`
+2. If theme changed, sync changes to `themes/my_dashboard_theme_staging.yaml` (same values, different top-level key)
+3. Deploy to staging: `--stage`
+4. Open HA sidebar → "My Dashboard (Staging)" → verify changes
+5. Promote to production: `--promote`
+6. Verify production dashboard
+7. Tag the release: `git tag -a live-vN -m "description"`
+
+### One-Time Setup
+
+Add staging dashboard entry to your HA server's `configuration.yaml`:
+
+```yaml
+lovelace:
+  mode: storage
+  dashboards:
+    lovelace-yaml:
+      mode: yaml
+      filename: lovelace/my-dashboard.yaml
+      title: My Dashboard
+      icon: mdi:view-dashboard
+      show_in_sidebar: true
+    lovelace-staging:
+      mode: yaml
+      filename: lovelace/my-dashboard-staging.yaml
+      title: My Dashboard (Staging)
+      icon: mdi:flask
+      show_in_sidebar: true
+```
+
+Then restart Home Assistant (required for `lovelace:` config changes).
 
 ---
 

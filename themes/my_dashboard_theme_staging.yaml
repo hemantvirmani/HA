@@ -1,0 +1,48 @@
+My Dashboard Theme - Staging:
+  # ── Background ──
+  background-image: "center / cover no-repeat fixed url('/local/bg.png')"
+  lovelace-background: var(--background-image)
+  # ── Mushroom Square Shadow base ──
+  ha-badge-border-radius: 6px
+  ha-card-box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.16)
+  ha-card-border-width: 0
+  ha-card-border-radius: 6px
+  ha-card-features-border-radius: 6px
+  ha-tile-icon-border-radius: 6px
+  mush-spacing: 8px
+  mush-icon-border-radius: 6px
+  mush-control-border-radius: 6px
+  mush-chip-border-radius: 6px
+  # ── Global text & icon colors ──
+  primary-text-color: white
+  secondary-text-color: "rgba(255, 255, 255, 0.7)"
+  text-primary-color: white
+  # ── Mushroom default icon colors (active state) ──
+  # Without these, mushroom entity cards in active state use blue-grey defaults
+  mush-rgb-state-entity: "255, 255, 255"
+  mush-rgb-state-light: "255, 255, 255"
+  mush-rgb-state-fan: "255, 255, 255"
+  mush-rgb-state-switch: "255, 255, 255"
+  mush-rgb-state-vacuum: "255, 255, 255"
+  mush-rgb-state-person: "255, 255, 255"
+  # ── Dashboard colors ──
+  card-bg: rgba(30, 15, 60, 0.75)
+  section-header-bg: rgba(45, 25, 120, 0.85)
+  greeting-bg: rgba(60, 35, 150, 0.85)
+  alert-red-bg: rgb(220, 53, 69)
+  # ── Bubble Card defaults ──
+  bubble-button-border-radius: 7px
+  bubble-sub-button-border-radius: 7px
+  bubble-sub-icon-size: 13px
+  bubble-border-radius: 7px
+  bubble-button-bg: rgba(30, 15, 60, 0.75)
+  bubble-icon-container-bg: "#0F2C64"
+  bubble-icon-container-black: black
+  # ── Sub-button colors ──
+  bubble-sub-button-on-color: "#FF8000"
+  bubble-sub-button-off-color: "#37474F"
+  bubble-sub-button-text-color: white
+  bubble-sub-button-font-size: 10px
+  modes:
+    light: {}
+    dark: {}

@@ -2,12 +2,14 @@
 """
 Home Assistant Dashboard Deployment Script
 
-This script deploys the dashboard YAML file and optionally the theme file
-to your Home Assistant server, and reloads the YAML configuration.
+Deploys the dashboard YAML and theme to your Home Assistant server via SSH.
+Supports staging/production workflow with --stage and --promote flags.
 
 Usage:
-    python deploy/deploy_dashboard.py [--host HOST] [--user USER] [--key KEY] [--port PORT] [--no-reload]
-    python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --theme
+    python deploy/deploy_dashboard.py --host HOST --user USER --key KEY          # prod deploy (dashboard only)
+    python deploy/deploy_dashboard.py --host HOST --user USER --key KEY --theme  # prod deploy (dashboard + theme)
+    python deploy/deploy_dashboard.py --host HOST --user USER --key KEY --stage  # staging deploy
+    python deploy/deploy_dashboard.py --host HOST --user USER --key KEY --promote # promote to prod
 
 Requirements:
     - Python 3.6+
@@ -15,6 +17,7 @@ Requirements:
 """
 
 import argparse
+import io
 import sys
 import os
 from pathlib import Path
@@ -27,7 +30,12 @@ class HomeAssistantDeployer:
     DEFAULT_HA_CONFIG_DIR = "/config"
     DEFAULT_DASHBOARDS_DIR = "/config/lovelace"
     DEFAULT_DASHBOARD_FILE = "my-dashboard.yaml"
+    DEFAULT_STAGING_DASHBOARD_FILE = "my-dashboard-staging.yaml"
     DEFAULT_THEMES_DIR = "/config/themes"
+
+    # Theme names (must match top-level key in theme YAML files)
+    PROD_THEME_NAME = "My Dashboard Theme"
+    STAGING_THEME_NAME = "My Dashboard Theme - Staging"
     
     def __init__(self, host, username, key_file=None, password=None, port=22):
         """
@@ -107,7 +115,26 @@ class HomeAssistantDeployer:
         except Exception as e:
             print(f"✗ {label.capitalize()} upload failed: {e}")
             return False
-    
+
+    def deploy_content(self, content, remote_path, label="file"):
+        """
+        Deploy in-memory content to Home Assistant (no local file needed).
+
+        Args:
+            content: String content to upload
+            remote_path: Path on remote server
+            label: Display label for status messages
+        """
+        try:
+            print(f"Uploading {label}: → {remote_path}...")
+            file_obj = io.BytesIO(content.encode("utf-8"))
+            self.sftp_client.putfo(file_obj, remote_path)
+            print(f"✓ {label.capitalize()} uploaded successfully")
+            return True
+        except Exception as e:
+            print(f"✗ {label.capitalize()} upload failed: {e}")
+            return False
+
     def reload_yaml_config(self):
         """
         Reload YAML configuration in Home Assistant using command line
@@ -176,28 +203,27 @@ def main():
     repo_root = script_dir.parent
     default_local = str(repo_root / "my-dashboard.yaml")
     default_theme_local = str(repo_root / "themes" / "my_dashboard_theme.yaml")
+    default_theme_staging_local = str(repo_root / "themes" / "my_dashboard_theme_staging.yaml")
 
     parser = argparse.ArgumentParser(
         description="Deploy Home Assistant dashboard and theme via SSH",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Deploy dashboard only
+  # Deploy dashboard only (production)
   python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
 
-  # Deploy dashboard + theme
+  # Deploy dashboard + theme (production)
   python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --theme
 
-  # Deploy with password
-  python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --password mypassword --theme
+  # Deploy to staging (dashboard + theme, theme name auto-replaced)
+  python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --stage
+
+  # Promote staging to production (dashboard + theme)
+  python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --promote
 
   # Deploy without auto-reload
   python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-reload
-
-  # Deploy with custom paths
-  python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa \\
-      --local my-dashboard.yaml --remote /config/lovelace/ui-lovelace.yaml \\
-      --theme --theme-local themes/my_dashboard_theme.yaml --theme-remote /config/themes/my_dashboard_theme.yaml
         """
     )
 
@@ -207,15 +233,25 @@ Examples:
     parser.add_argument('--password', help='SSH password (alternative to key)')
     parser.add_argument('--port', type=int, default=22, help='SSH port (default: 22)')
     parser.add_argument('--local', default=default_local,
-                       help=f'Local dashboard file (default: my-dashboard.yaml at repo root)')
+                       help='Local dashboard file (default: my-dashboard.yaml at repo root)')
     parser.add_argument('--remote',
-                       help='Remote path for dashboard file (default: /config/lovelace/ui-lovelace.yaml)')
+                       help='Remote path for dashboard file (default: /config/lovelace/my-dashboard.yaml)')
     parser.add_argument('--theme', action='store_true',
-                       help='Also deploy the theme file')
+                       help='Also deploy the theme file (production mode only)')
     parser.add_argument('--theme-local', default=default_theme_local,
                        help='Local theme file (default: themes/my_dashboard_theme.yaml)')
     parser.add_argument('--theme-remote',
                        help='Remote path for theme file (default: /config/themes/my_dashboard_theme.yaml)')
+    parser.add_argument('--theme-staging-local', default=default_theme_staging_local,
+                       help='Local staging theme file (default: themes/my_dashboard_theme_staging.yaml)')
+
+    # Staging/promotion mode (mutually exclusive)
+    deploy_mode = parser.add_mutually_exclusive_group()
+    deploy_mode.add_argument('--stage', action='store_true',
+                            help='Deploy to staging (dashboard + staging theme)')
+    deploy_mode.add_argument('--promote', action='store_true',
+                            help='Promote to production (dashboard + prod theme)')
+
     parser.add_argument('--no-reload', action='store_true',
                        help='Skip automatic YAML config reload')
     parser.add_argument('--no-backup', action='store_true',
@@ -239,7 +275,10 @@ Examples:
     if not os.path.exists(args.local):
         print(f"Error: Local dashboard file not found: {args.local}")
         sys.exit(1)
-    if args.theme and not os.path.exists(args.theme_local):
+    if args.stage and not os.path.exists(args.theme_staging_local):
+        print(f"Error: Local staging theme file not found: {args.theme_staging_local}")
+        sys.exit(1)
+    if (args.theme or args.promote) and not os.path.exists(args.theme_local):
         print(f"Error: Local theme file not found: {args.theme_local}")
         sys.exit(1)
 
@@ -256,31 +295,76 @@ Examples:
         sys.exit(1)
 
     try:
-        # --- Deploy dashboard ---
-        if not args.no_backup:
-            deployer.backup_file(args.remote, "dashboard")
+        deployed = []
 
-        if not deployer.deploy_file(args.local, args.remote, "dashboard"):
-            print("\n✗ Dashboard deployment failed")
-            sys.exit(1)
+        if args.stage:
+            # ── Staging deployment ──
+            # Dashboard: read, replace theme name in-memory, upload to staging path
+            staging_dashboard_remote = (
+                f"{HomeAssistantDeployer.DEFAULT_DASHBOARDS_DIR}/"
+                f"{HomeAssistantDeployer.DEFAULT_STAGING_DASHBOARD_FILE}"
+            )
+            staging_theme_remote = (
+                f"{HomeAssistantDeployer.DEFAULT_THEMES_DIR}/"
+                f"{os.path.basename(args.theme_staging_local)}"
+            )
 
-        # --- Deploy theme (if requested) ---
-        if args.theme:
-            print()  # blank line separator
+            dashboard_content = Path(args.local).read_text(encoding="utf-8")
+            dashboard_content = dashboard_content.replace(
+                HomeAssistantDeployer.PROD_THEME_NAME,
+                HomeAssistantDeployer.STAGING_THEME_NAME
+            )
+
             if not args.no_backup:
-                deployer.backup_file(args.theme_remote, "theme")
+                deployer.backup_file(staging_dashboard_remote, "staging dashboard")
 
-            if not deployer.deploy_file(args.theme_local, args.theme_remote, "theme"):
-                print("\n✗ Theme deployment failed")
+            if not deployer.deploy_content(dashboard_content, staging_dashboard_remote, "staging dashboard"):
+                print("\n✗ Staging dashboard deployment failed")
                 sys.exit(1)
+            deployed.append("staging dashboard")
 
-        # --- Summary ---
-        print("\n" + "="*60)
-        deployed = ["dashboard"]
-        if args.theme:
-            deployed.append("theme")
-        print(f"✓ Deployed successfully: {', '.join(deployed)}")
-        print("="*60)
+            # Theme: upload staging theme file
+            print()
+            if not args.no_backup:
+                deployer.backup_file(staging_theme_remote, "staging theme")
+
+            if not deployer.deploy_file(args.theme_staging_local, staging_theme_remote, "staging theme"):
+                print("\n✗ Staging theme deployment failed")
+                sys.exit(1)
+            deployed.append("staging theme")
+
+        else:
+            # ── Production deployment (default or --promote) ──
+            if not args.no_backup:
+                deployer.backup_file(args.remote, "dashboard")
+
+            if not deployer.deploy_file(args.local, args.remote, "dashboard"):
+                print("\n✗ Dashboard deployment failed")
+                sys.exit(1)
+            deployed.append("dashboard")
+
+            # Deploy theme if --theme or --promote
+            if args.theme or args.promote:
+                print()
+                if not args.no_backup:
+                    deployer.backup_file(args.theme_remote, "theme")
+
+                if not deployer.deploy_file(args.theme_local, args.theme_remote, "theme"):
+                    print("\n✗ Theme deployment failed")
+                    sys.exit(1)
+                deployed.append("theme")
+
+        # ── Summary ──
+        if args.stage:
+            mode_label = "STAGING"
+        elif args.promote:
+            mode_label = "PROMOTE TO PROD"
+        else:
+            mode_label = "PRODUCTION"
+
+        print(f"\n{'='*60}")
+        print(f"✓ Deployed successfully ({mode_label}): {', '.join(deployed)}")
+        print(f"{'='*60}")
 
         # Reload configuration
         if not args.no_reload:
