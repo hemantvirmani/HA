@@ -2,34 +2,56 @@
 
 Home Assistant Lovelace dashboard configuration managed in YAML mode.
 
-## 📁 Files
+## 📁 Project Structure
+
+```
+HA/
+├── my-dashboard.yaml           # Main dashboard configuration (edit this file)
+├── themes/                    # Theme resources
+│   ├── bg.png                 # Dashboard background image
+│   └── my_dashboard_theme.yaml# Theme CSS variables and colors
+├── deploy/                    # Deployment tools
+│   ├── deploy_dashboard.py     # Deployment script for pushing changes to HA
+│   └── DEPLOYMENT.md          # Complete deployment guide with troubleshooting
+├── config/                    # Home Assistant configuration snippets
+│   └── aqi_template_sensor.yaml # AQI sensor template configuration
+├── README.md                  # This file
+├── .clinerules               # Coding conventions and best practices
+├── .gitignore                # Git ignore rules
+├── docker-compose.yaml        # Docker compose configuration
+└── requirements.txt          # Python dependencies for deployment
+```
+
+### Key Files
 
 | File | Purpose |
 |------|---------|
-| `dashboard-current.yaml` | Active working dashboard (edit this file) |
-| `dashboard-old.yaml` | Frozen Snapshot - Original production dashboard (do not modify) |
-| `dashboard-new.yaml` | Frozen Snapshot - Snapshot used to create current-dashboard (do not modify) |
-| `deploy_dashboard.py` | Deployment script for pushing changes to HA |
+| `my-dashboard.yaml` | Active working dashboard (edit this file) |
+| `themes/my_dashboard_theme.yaml` | Dashboard theme with CSS variables and colors |
+| `themes/bg.png` | Background image for dashboard |
+| `deploy/deploy_dashboard.py` | Deployment script for pushing changes to HA |
+| `deploy/DEPLOYMENT.md` | Complete deployment guide with troubleshooting |
+| `config/aqi_template_sensor.yaml` | AQI sensor template configuration |
 
 ## 🏷️ Tagging / Checkpoints
 
 | Tag | Points To | Description |
 |-----|-----------|-------------|
-| `dashboard-v1` | First commit | Original dashboard (`dashboard-old.yaml`) |
+| `dashboard-v1` | First commit | Original dashboard |
 | `dashboard-v2` | Current | New dashboard with inline styles, teal backgrounds, section headers |
 | `live-v1` | Same as v2 | First live deployment |
 
 **Usage:**
-- Compare versions: `git diff dashboard-v1 dashboard-v2 -- dashboard-current.yaml`
-- View a past version: `git show dashboard-v2:dashboard-current.yaml`
+- Compare versions: `git diff dashboard-v1 dashboard-v2 -- my-dashboard.yaml`
+- View a past version: `git show dashboard-v2:my-dashboard.yaml`
 - Tag a new checkpoint: `git tag -a dashboard-v3 -m "description"`
 - Tag a live deploy: `git tag -a live-v2 -m "description"`
 
 ## 🔧 Development Workflow
 
-1. Edit `dashboard-current.yaml` locally
+1. Edit `my-dashboard.yaml` locally
 2. Validate YAML syntax
-3. Deploy with `deploy_dashboard.py` (see [DEPLOYMENT.md](DEPLOYMENT.md) for details)
+3. Deploy with `python deploy/deploy_dashboard.py` (see [deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md) for details)
 4. Verify in Home Assistant UI
 5. Tag checkpoint: `git tag -a dashboard-vN -m "description"`
 6. If deploying live: `git tag -a live-vN -m "description"`
@@ -39,14 +61,14 @@ Home Assistant Lovelace dashboard configuration managed in YAML mode.
 
 ```bash
 # Deploy to Home Assistant
-python deploy_dashboard.py --host YOUR_HA_IP --user root --key ~/.ssh/id_rsa
+python deploy/deploy_dashboard.py --host YOUR_HA_IP --user root --key ~/.ssh/id_rsa
 ```
 
-> **Need detailed setup instructions?** See [DEPLOYMENT.md](DEPLOYMENT.md) for venv setup, SSH configuration, and troubleshooting.
+> **Need detailed setup instructions?** See [deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md) for venv setup, SSH configuration, and troubleshooting.
 
 ## 📚 Documentation
 
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete deployment guide with troubleshooting
+- **[deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md)** - Complete deployment guide with troubleshooting
 - **[.clinerules](.clinerules)** - Coding conventions and best practices for Cline
 
 ## 🎨 Dashboard Views
@@ -68,46 +90,40 @@ The dashboard contains five views:
 
 ## 🎨 Style Architecture
 
-YAML anchors are defined once at the top level in `_styles:` section and reused throughout:
+YAML anchors are defined once at the top level in the `_styles:` section and reused throughout:
 
 | Anchor | Color | Usage |
 |--------|-------|--------|
-| `*style_section_header` | `rgba(29, 78, 216, 0.95)` | Blue section headings |
-| `*style_section_header_hidden` | `rgba(29, 78, 216, 0.95)` + `display: none` | Hidden section headers |
-| `*style_teal` | `rgb(45, 95, 125)` | Teal content/data cards |
-| `*style_teal_hidden` | `rgb(45, 95, 125)` + `display: none` | Teal cards hidden from view (swap to `*style_teal` to show) |
-| `*style_greeting` | `rgba(2, 132, 199, 0.95)` | Greeting banner |
-| `*style_alert_red` | `rgb(220, 53, 69)` | Weather alert cards |
-| `*style_alert_red_alpha` | `rgba(220, 53, 69, 0.95)` | Weather alert detail cards |
-| `*style_thermostat_popup` | `rgb(37, 85, 178)` | Thermostat popup |
+| `*style_section_header` | `var(--section-header-bg)` | Section headings |
+| `*style_section_header_hidden` | `var(--section-header-bg)` + `display: none` | Hidden section headers |
+| `*style_card` | `var(--card-bg)` | General cards using theme color |
+| `*style_card_hidden` | `var(--card-bg)` + `display: none` | Hidden cards |
+| `*style_greeting` | `var(--greeting-bg)` | Greeting banner |
+| `*style_alert_red` | `var(--alert-red-bg)` | Weather alert cards |
+| `*style_bubble_media` | Media player card styles | Bubble media player cards |
+| `*style_chips_clean` | Clean chips styling | Mushroom chips cards |
+| `*style_popup_padding` | Popup card padding | Mod-card popup styling |
 
-### Bubble Card CSS Variables
+### Theme CSS Variables
 
-CSS custom properties for bubble-card are defined inline in each card's `:host` block (inside the card's shadow DOM). Bubble-card does not inherit CSS variables from view-level `card_mod` or theme files.
+The dashboard uses a custom theme defined in `themes/my_dashboard_theme.yaml` with the following key variables:
 
-**Button cards:**
+**Dashboard Colors:**
+- `--card-bg`: `rgba(30, 15, 60, 0.75)` - Background for cards
+- `--section-header-bg`: `rgba(45, 25, 120, 0.85)` - Section header backgrounds
+- `--greeting-bg`: `rgba(60, 35, 150, 0.85)` - Greeting banner
+- `--alert-red-bg`: `rgb(220, 53, 69)` - Alert cards
 
-| Property | Value | Effect |
-|----------|-------|--------|
-| `--bubble-button-border-radius` | `7px` | Rounded corners on bubble buttons |
-| `--bubble-sub-button-border-radius` | `7px` | Rounded corners on bubble sub-buttons |
-| `--bubble-button-bg` | `rgba(52, 152, 220, 0.95)` | Bubble button background color |
-| `--bubble-icon-container-bg` | `#0F2C64` | Bubble icon container (dark blue) |
-| `--bubble-sub-icon-size` | `13px` | Sub-button icon size |
-
-**Climate / media-player cards:**
-
-| Property | Value | Effect |
-|----------|-------|--------|
-| `--bubble-border-radius` | `7px` | Card border radius (not button-specific) |
-| `--bubble-sub-button-border-radius` | `7px` | Rounded corners on sub-buttons |
-| `--bubble-icon-container-black` | `black` | Icon container for climate/media cards |
-| `--bubble-sub-icon-size` | `13px` | Sub-button icon size |
-
-Each bubble card's `styles:` uses `var(--variable)` to reference these values from its own `:host` block.
+**Bubble Card Defaults:**
+- `--bubble-button-bg`: `rgba(30, 15, 60, 0.75)` - Button backgrounds
+- `--bubble-icon-container-bg`: `#0F2C64` - Icon containers
+- `--bubble-sub-button-on-color`: `#FF8000` - On state (orange)
+- `--bubble-sub-button-off-color`: `#37474F` - Off state (dark grey)
+- `--bubble-sub-button-text-color`: `white` - Sub-button text color
+- `--bubble-sub-button-font-size`: `10px` - Sub-button font size
 
 ## 📖 More Information
 
 - Home Assistant: https://www.home-assistant.io/
 - Lovelace Documentation: https://www.home-assistant.io/lovelace/
-- Deployment Guide: [DEPLOYMENT.md](DEPLOYMENT.md)
+- Deployment Guide: [deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md)

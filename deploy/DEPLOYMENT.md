@@ -109,7 +109,7 @@ The Python deployment script provides following features:
 --key KEY_FILE     Path to SSH private key file
 --password PASS    SSH password (alternative to key)
 --port PORT        SSH port (default: 22)
---local FILE       Local dashboard file (default: new.dashboard.yaml)
+--local FILE       Local dashboard file (default: ../my-dashboard.yaml)
 --remote PATH      Remote path for dashboard (default: /config/lovelace/ui-lovelace.yaml)
 --no-reload        Skip automatic YAML config reload
 --no-backup        Skip backup of existing dashboard

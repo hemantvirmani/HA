@@ -196,8 +196,8 @@ Examples:
     parser.add_argument('--key', help='Path to SSH private key file')
     parser.add_argument('--password', help='SSH password (alternative to key)')
     parser.add_argument('--port', type=int, default=22, help='SSH port (default: 22)')
-    parser.add_argument('--local', default='new.dashboard.yaml', 
-                       help='Local dashboard file to deploy (default: new.dashboard.yaml)')
+    parser.add_argument('--local', default='../my-dashboard.yaml', 
+                       help='Local dashboard file to deploy (default: ../my-dashboard.yaml)')
     parser.add_argument('--remote', 
                        help='Remote path for dashboard file (default: /config/lovelace/ui-lovelace.yaml)')
     parser.add_argument('--no-reload', action='store_true',

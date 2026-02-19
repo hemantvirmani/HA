@@ -17,8 +17,14 @@ My Dashboard Theme:
   primary-text-color: white
   secondary-text-color: "rgba(255, 255, 255, 0.7)"
   text-primary-color: white
-  state-icon-color: white
-  mush-icon-color: white
+  # ── Mushroom default icon colors (active state) ──
+  # Without these, mushroom entity cards in active state use blue-grey defaults
+  mush-rgb-state-entity: "255, 255, 255"
+  mush-rgb-state-light: "255, 255, 255"
+  mush-rgb-state-fan: "255, 255, 255"
+  mush-rgb-state-switch: "255, 255, 255"
+  mush-rgb-state-vacuum: "255, 255, 255"
+  mush-rgb-state-person: "255, 255, 255"
   # ── Dashboard colors ──
   card-bg: rgba(30, 15, 60, 0.75)
   section-header-bg: rgba(45, 25, 120, 0.85)
