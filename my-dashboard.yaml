@@ -111,13 +111,13 @@ views:
             primary: |-
               {% set time = now().hour %}
               {% if (time >= 19) %}
-                  Good Evening, {{user}} !!
+                  Good Evening, {{user.split(' ')[0]}}!
               {% elif (time >= 12) %}
-                  Good Afternoon, {{user}} !!
+                  Good Afternoon, {{user.split(' ')[0]}}!
               {% elif (time >= 5) %}
-                  Good Morning, {{user}} !!
+                  Good Morning, {{user.split(' ')[0]}}!
               {% else %}
-                  Hello, {{user}} !!
+                  Hello, {{user.split(' ')[0]}}!
               {% endif %}
             secondary: >-
               It is 
