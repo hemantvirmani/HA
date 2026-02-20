@@ -1285,79 +1285,67 @@ views:
             cards:
               - type: custom:mushroom-template-card
                 color: white
+                entity: sensor.hp_deskjet_3700_series
+                primary: HP DeskJet 3700
+                secondary: "{{ states('sensor.hp_deskjet_3700_series') }}"
                 icon: mdi:printer-wireless
-                primary: HP DeskJet 3700 Series
-                card_mod: *style_section_header
-              - type: custom:bubble-card
-                card_type: button
-                button_type: name
-                name: HP DeskJet 3700
-                icon: mdi:printer-wireless
-                sub_button:
-                  - entity: sensor.hp_deskjet_3700_series
-                    name: Status
-                    icon: mdi:printer-pos-alert
-                    show_state: true
-                    show_name: true
-                    show_attribute: false
-                    show_last_changed: false
-                    state_background: true
-                    show_background: true
-                    show_icon: true
-                  - entity: sensor.hp_deskjet_3700_series_black_ink
-                    icon: mdi:water
-                    name: Black
-                    show_state: true
-                    show_name: true
-                    show_attribute: false
-                    show_icon: true
-                    show_arrow: false
-                  - entity: sensor.hp_deskjet_3700_series_tri_color_ink
-                    show_attribute: false
-                    icon: mdi:water
-                    show_icon: true
-                    show_name: true
-                    name: Color
-                    show_state: true
-                show_state: false
-                show_icon: true
-                show_name: false
-                scrolling_effect: false
-                double_tap_action:
-                  action: more-info
-                hold_action:
-                  action: more-info
+                icon_color: >-
+                  {% if is_state('sensor.hp_deskjet_3700_series', 'idle') %}
+                    green
+                  {% elif is_state('sensor.hp_deskjet_3700_series', 'printing') %}
+                    blue
+                  {% else %}
+                    red
+                  {% endif %}
                 tap_action:
                   action: more-info
-                button_action:
-                  double_tap_action:
-                    action: more-info
-                  hold_action:
-                    action: more-info
-                  tap_action:
-                    action: more-info
-                styles: |
-                  .bubble-button-background {
-                    background-color: var(--bubble-button-bg);
-                  }
-                  .bubble-icon-container {
-                    background: var(--bubble-icon-container-bg);
-                  }
-                  .bubble-sub-button-icon {
-                    --mdc-icon-size: var(--bubble-sub-icon-size) !important;
-                  }
-                  .bubble-sub-button-1 {
-                    background-color: var(--bubble-sub-button-off-color) !important;
-                    font-size: var(--bubble-sub-button-font-size);
-                  }
-                  .bubble-sub-button-2 {
-                    background-color: var(--bubble-sub-button-off-color) !important;
-                    font-size: var(--bubble-sub-button-font-size);
-                  }
-                  .bubble-sub-button-3 {
-                    background-color: var(--bubble-sub-button-off-color) !important;
-                    font-size: var(--bubble-sub-button-font-size);
-                  }
+                card_mod: *style_section_header
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-template-card
+                    entity: sensor.hp_deskjet_3700_series_black_ink
+                    primary: Black Ink
+                    secondary: "{{ states('sensor.hp_deskjet_3700_series_black_ink') }}%"
+                    icon: mdi:water
+                    icon_color: >-
+                      {% set level = states('sensor.hp_deskjet_3700_series_black_ink') | int(0) %}
+                      {% if level > 50 %}
+                        green
+                      {% elif level > 20 %}
+                        orange
+                      {% else %}
+                        red
+                      {% endif %}
+                    badge_icon: >-
+                      {% if states('sensor.hp_deskjet_3700_series_black_ink') | int(0) < 15 %}
+                        mdi:alert
+                      {% endif %}
+                    badge_color: red
+                    tap_action:
+                      action: more-info
+                    card_mod: *style_card
+                  - type: custom:mushroom-template-card
+                    entity: sensor.hp_deskjet_3700_series_tri_color_ink
+                    primary: Color Ink
+                    secondary: "{{ states('sensor.hp_deskjet_3700_series_tri_color_ink') }}%"
+                    icon: mdi:palette
+                    icon_color: >-
+                      {% set level = states('sensor.hp_deskjet_3700_series_tri_color_ink') | int(0) %}
+                      {% if level > 50 %}
+                        cyan
+                      {% elif level > 20 %}
+                        orange
+                      {% else %}
+                        red
+                      {% endif %}
+                    badge_icon: >-
+                      {% if states('sensor.hp_deskjet_3700_series_tri_color_ink') | int(0) < 15 %}
+                        mdi:alert
+                      {% endif %}
+                    badge_color: red
+                    tap_action:
+                      action: more-info
+                    card_mod: *style_card
 
           - type: custom:mushroom-template-card
             color: white
