@@ -30,29 +30,30 @@ class HomeAssistantDeployer:
     DEFAULT_HA_CONFIG_DIR = "/config"
     DEFAULT_DASHBOARDS_DIR = "/config/lovelace"
     DEFAULT_DASHBOARD_FILE = "my-dashboard.yaml"
-    DEFAULT_STAGING_DASHBOARD_FILE = "my-dashboard-staging.yaml"
     DEFAULT_THEMES_DIR = "/config/themes"
 
     # Theme names (must match top-level key in theme YAML files)
     PROD_THEME_NAME = "My Dashboard Theme"
     STAGING_THEME_NAME = "My Dashboard Theme - Staging"
     
-    def __init__(self, host, username, key_file=None, password=None, port=22):
+    def __init__(self, host, username, key_file=None, password=None, port=22, token=None):
         """
         Initialize the deployer
-        
+
         Args:
             host: SSH hostname or IP address
             username: SSH username
             key_file: Path to SSH private key file (optional)
             password: SSH password (alternative to key_file)
             port: SSH port (default: 22)
+            token: Home Assistant Long-Lived Access Token (optional, for API reload)
         """
         self.host = host
         self.username = username
         self.key_file = key_file
         self.password = password
         self.port = port
+        self.token = token
         self.ssh_client = None
         self.sftp_client = None
         
@@ -137,47 +138,79 @@ class HomeAssistantDeployer:
 
     def reload_yaml_config(self):
         """
-        Reload YAML configuration in Home Assistant using command line
-        
-        This uses the Home Assistant CLI to reload the configuration
+        Reload YAML configuration in Home Assistant.
+
+        Tries HA REST API first (if --token provided), then falls back to CLI commands.
         """
         try:
             print("Reloading Home Assistant YAML configuration...")
-            
-            # Method 1: Using hassio CLI (if running Hass.io/Home Assistant OS)
+
+            # Method 1: HA REST API (works with any install type if token provided)
+            if self.token:
+                curl_cmd = (
+                    f'curl -sf -X POST'
+                    f' -H "Authorization: Bearer {self.token}"'
+                    f' -H "Content-Type: application/json"'
+                    f' http://localhost:8123/api/services/homeassistant/reload_core_config'
+                )
+                try:
+                    stdin, stdout, stderr = self.ssh_client.exec_command(curl_cmd, timeout=30)
+                    exit_status = stdout.channel.recv_exit_status()
+                    if exit_status == 0:
+                        print("✓ Configuration reloaded successfully via HA REST API")
+                        self._browser_refresh()
+                        return True
+                    else:
+                        err = stderr.read().decode().strip()
+                        print(f"⚠ API reload failed (exit {exit_status}): {err}")
+                except Exception as e:
+                    print(f"⚠ API reload failed: {e}")
+
+            # Method 2: CLI fallbacks
             commands = [
-                # Try hassio CLI first (Home Assistant OS)
                 "hassio homeassistant reload core_config",
-                # Fallback to direct homeassistant command
                 "sudo -u homeassistant -H /srv/homeassistant/bin/homeassistant --script reload_core_config",
-                # Another fallback for container-based installs
                 "docker exec homeassistant homeassistant --script reload_core_config"
             ]
-            
-            success = False
+
             for cmd in commands:
                 try:
                     stdin, stdout, stderr = self.ssh_client.exec_command(cmd, timeout=30)
                     exit_status = stdout.channel.recv_exit_status()
-                    
                     if exit_status == 0:
                         print(f"✓ Configuration reloaded successfully using: {cmd}")
-                        success = True
-                        break
+                        return True
                 except Exception:
                     continue
-            
-            if not success:
-                print("⚠ Could not auto-reload configuration. You may need to reload manually:")
-                print("  - Via UI: Settings → Server Controls → YAML Configuration Reloading")
-                print("  - Via SSH: Run one of the commands above manually")
-            
-            return success
-            
+
+            print("⚠ Could not auto-reload configuration. You may need to reload manually:")
+            print("  - Via UI: Settings → Server Controls → YAML Configuration Reloading")
+            return False
+
         except Exception as e:
             print(f"✗ Reload failed: {e}")
             return False
     
+    def _browser_refresh(self):
+        """Refresh all connected browsers via Browser Mod (if installed)."""
+        if not self.token:
+            return
+        curl_cmd = (
+            f'curl -sf -X POST'
+            f' -H "Authorization: Bearer {self.token}"'
+            f' -H "Content-Type: application/json"'
+            f' http://localhost:8123/api/services/browser_mod/refresh'
+        )
+        try:
+            stdin, stdout, stderr = self.ssh_client.exec_command(curl_cmd, timeout=10)
+            exit_status = stdout.channel.recv_exit_status()
+            if exit_status == 0:
+                print("✓ Browser refresh triggered via Browser Mod")
+            else:
+                print("⚠ Browser Mod refresh skipped (not installed or unavailable)")
+        except Exception:
+            pass
+
     def backup_file(self, remote_path, label="file"):
         """Create a backup of an existing remote file"""
         try:
@@ -252,6 +285,8 @@ Examples:
     deploy_mode.add_argument('--promote', action='store_true',
                             help='Promote to production (dashboard + prod theme)')
 
+    parser.add_argument('--token',
+                       help='HA Long-Lived Access Token (for API-based reload)')
     parser.add_argument('--no-reload', action='store_true',
                        help='Skip automatic YAML config reload')
     parser.add_argument('--no-backup', action='store_true',
@@ -268,8 +303,10 @@ Examples:
     if not args.remote:
         args.remote = f"{HomeAssistantDeployer.DEFAULT_DASHBOARDS_DIR}/{HomeAssistantDeployer.DEFAULT_DASHBOARD_FILE}"
     if not args.theme_remote:
+        # Derive theme dir from --remote's parent (e.g. ~/ha/config/lovelace/.. → ~/ha/config/themes/)
+        config_dir = os.path.dirname(os.path.dirname(args.remote))
         theme_filename = os.path.basename(args.theme_local)
-        args.theme_remote = f"{HomeAssistantDeployer.DEFAULT_THEMES_DIR}/{theme_filename}"
+        args.theme_remote = f"{config_dir}/themes/{theme_filename}"
 
     # Validate local files
     if not os.path.exists(args.local):
@@ -288,7 +325,8 @@ Examples:
         username=args.user,
         key_file=args.key,
         password=args.password,
-        port=args.port
+        port=args.port,
+        token=args.token
     )
 
     if not deployer.connect():
@@ -299,13 +337,16 @@ Examples:
 
         if args.stage:
             # ── Staging deployment ──
-            # Dashboard: read, replace theme name in-memory, upload to staging path
+            # Derive staging paths from --remote filename (e.g. foo.yaml → foo-staging.yaml)
+            dashboard_dir = os.path.dirname(args.remote)
+            theme_dir = os.path.dirname(args.theme_remote)
+            remote_name = os.path.basename(args.remote)
+            remote_stem, remote_ext = os.path.splitext(remote_name)
             staging_dashboard_remote = (
-                f"{HomeAssistantDeployer.DEFAULT_DASHBOARDS_DIR}/"
-                f"{HomeAssistantDeployer.DEFAULT_STAGING_DASHBOARD_FILE}"
+                f"{dashboard_dir}/{remote_stem}-staging{remote_ext}"
             )
             staging_theme_remote = (
-                f"{HomeAssistantDeployer.DEFAULT_THEMES_DIR}/"
+                f"{theme_dir}/"
                 f"{os.path.basename(args.theme_staging_local)}"
             )
 

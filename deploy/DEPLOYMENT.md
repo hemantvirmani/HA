@@ -77,18 +77,12 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/
 ### Deploy Your Dashboard
 
 ```bash
-# Deploy to staging (test changes first)
+# Stage → verify → promote (recommended workflow)
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --stage
-
-# Promote to production (after verifying staging)
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --promote
-
-# Direct production deploy (dashboard only)
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa
-
-# Direct production deploy (dashboard + theme)
-python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --theme
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --promote --token YOUR_TOKEN
 ```
+
+> See [Usage Examples](#usage-examples) for all deployment modes.
 
 ---
 
@@ -103,7 +97,7 @@ The Python deployment script provides following features:
 - ✅ **Dashboard + theme deployment** (theme via `--theme`, `--stage`, or `--promote`)
 - ✅ **In-memory theme name replacement** for staging (local files never modified)
 - ✅ **Secure file transfer** via SSH/SFTP
-- ✅ **Automatic YAML reload** (optional)
+- ✅ **Automatic YAML reload** via HA REST API (`--token`) or CLI fallbacks
 - ✅ **Multiple authentication methods** (SSH key or password, RSA/Ed25519/ECDSA)
 - ✅ **Cross-platform support** (works on Windows, Linux, Mac)
 - ✅ **Detailed error messages** and status updates
@@ -124,6 +118,7 @@ The Python deployment script provides following features:
 --theme-staging-local FILE  Local staging theme file (default: themes/my_dashboard_theme_staging.yaml)
 --stage                  Deploy to staging (dashboard + staging theme, mutually exclusive with --promote)
 --promote                Promote to production (dashboard + prod theme, mutually exclusive with --stage)
+--token TOKEN            HA Long-Lived Access Token (for API-based reload after deploy)
 --no-reload              Skip automatic YAML config reload
 --no-backup              Skip backup of existing files
 ```
@@ -143,6 +138,9 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/
 # Direct production deploy (dashboard + theme)
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --theme
 
+# Deploy with API-based auto-reload (recommended for Docker setups)
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --promote --token YOUR_TOKEN
+
 # Deploy without backup
 python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --no-backup
 
@@ -160,8 +158,9 @@ The deploy script supports a staging/production workflow for testing dashboard c
 
 - **Two dashboards** on the HA server: "My Dashboard" (prod) and "My Dashboard (Staging)"
 - **Two themes**: "My Dashboard Theme" (prod) and "My Dashboard Theme - Staging"
-- `--stage` reads the dashboard YAML, replaces theme references in-memory, and uploads to the staging path. Local files are never modified.
+- `--stage` reads the dashboard YAML, replaces theme references in-memory, and uploads to the staging path. The staging filename is derived from `--remote` (e.g. `my-dashboard.yaml` → `my-dashboard-staging.yaml`). Local files are never modified.
 - `--promote` deploys local files as-is to production paths (dashboard + prod theme)
+- Both flags respect `--remote` for path resolution
 - Both dashboards always exist in the HA sidebar
 
 ### Deploy to Staging
@@ -172,7 +171,7 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/
 
 This will:
 1. Read `my-dashboard.yaml` and replace all `My Dashboard Theme` references with `My Dashboard Theme - Staging` in memory
-2. Upload the modified dashboard to `/config/lovelace/my-dashboard-staging.yaml`
+2. Upload the modified dashboard to the staging path (derived from `--remote`, e.g. `/config/lovelace/my-dashboard-staging.yaml`)
 3. Upload `themes/my_dashboard_theme_staging.yaml` to `/config/themes/`
 
 ### Promote to Production
@@ -223,11 +222,42 @@ Then restart Home Assistant (required for `lovelace:` config changes).
 
 ## YAML Configuration Reload
 
-Reloading YAML configurations allows you to apply changes without restarting Home Assistant. Here are all the methods to reload YAML configs:
+Reloading YAML configurations allows you to apply changes without restarting Home Assistant.
 
-### Method 1: Command Line (SSH)
+### Automatic Reload via Deploy Script
 
-#### For Home Assistant OS (Hass.io)
+The deploy script can auto-reload HA after deployment. Pass `--token` with a Long-Lived Access Token:
+
+```bash
+python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/id_rsa --promote --token YOUR_TOKEN
+```
+
+To create a token: **HA UI → Profile → Security → Long-Lived Access Tokens → Create Token**
+
+The script tries these methods in order:
+1. **HA REST API** (if `--token` provided) — works with any install type including Docker with host networking
+2. **hassio CLI** — for Home Assistant OS
+3. **homeassistant --script** — for venv installs
+4. **docker exec** — for Docker installs
+
+Use `--no-reload` to skip auto-reload entirely.
+
+> **Important:** Which reload methods work depends on where you SSH into:
+>
+> | SSH target | `--remote` path | Reload that works |
+> |------------|----------------|-------------------|
+> | HA OS / container directly | `/config/lovelace/...` | CLI commands (hassio, docker exec) |
+> | Host machine running Docker | Volume mount path (e.g. `/home/user/ha/config/lovelace/...`) | **REST API (`--token`) only** — CLI commands run on the host, not inside the container |
+>
+> If you SSH into the host machine (not the container), always use `--token` for auto-reload.
+
+### Manual Reload Methods
+
+#### Method 1: Command Line (SSH)
+
+> **Note:** These commands only work when run **inside** the HA container or on HA OS — not from the host machine. If you SSH into the host, use the REST API (Method 4) or the deploy script's `--token` flag instead.
+
+##### For Home Assistant OS (Hass.io)
 
 ```bash
 # Reload core configuration
@@ -237,7 +267,7 @@ hassio homeassistant reload core_config
 hassio homeassistant reload all
 ```
 
-#### For Docker-based Installations
+##### For Docker-based Installations
 
 ```bash
 # Reload core configuration
@@ -253,7 +283,7 @@ docker exec homeassistant homeassistant --script reload scene
 docker exec homeassistant homeassistant --script reload script
 ```
 
-#### For Virtual Environment Installations
+##### For Virtual Environment Installations
 
 ```bash
 # Reload core configuration
@@ -276,18 +306,7 @@ sudo -u homeassistant -H /srv/homeassistant/bin/homeassistant --script reload sc
    - **Script** - Reloads script configurations
    - **Group** - Reloads group configurations
 
-### Method 3: Developer Tools
-
-1. Navigate to **Developer Tools** → **Services**
-2. Call the `homeassistant.reload_core_config` service
-3. For specific components:
-   - `automation.reload`
-   - `scene.reload`
-   - `script.reload`
-   - `group.reload`
-   - `homeassistant.reload_all`
-
-### Method 4: Using Home Assistant API
+### Method 3: Using Home Assistant API
 
 ```bash
 # Reload core configuration via API
@@ -301,21 +320,6 @@ curl -X POST \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   http://localhost:8123/api/services/automation/reload
-```
-
-### Method 5: Using MCP Server (Home Assistant)
-
-If you have the Home Assistant MCP server enabled, you can use it programmatically:
-
-```python
-# Example using MCP
-import mcp
-
-# Connect to Home Assistant MCP server
-client = mcp.Client("home-assistant")
-
-# Reload YAML configurations
-client.call_tool("reload_core_config")
 ```
 
 ### What Gets Reloaded?
@@ -334,7 +338,7 @@ When you reload YAML configurations:
 - ❌ **Platform configurations** (e.g., `mqtt:`, `sensor:`, `switch:` sections in `configuration.yaml`)
 - ❌ **Integration configurations** that require restart
 - ❌ **HACS custom cards** (needs browser refresh)
-- ❌ **Lovelace dashboard changes** (needs browser refresh or UI reload)
+- ❌ **Lovelace dashboard changes** (needs browser refresh — the deploy script handles this automatically via Browser Mod if `--token` is provided)
 
 ### When to Restart Instead of Reload
 
@@ -406,11 +410,12 @@ docker restart homeassistant
 
 ### Common SSH Paths
 
-| Installation Type | Config Path | Dashboard Path |
-|-------------------|-------------|----------------|
-| Home Assistant OS | `/config` | `/config/lovelace/ui-lovelace.yaml` |
-| Docker | `/config` | `/config/lovelace/ui-lovelace.yaml` |
-| Virtual Environment | `/home/homeassistant/.homeassistant` | `/home/homeassistant/.homeassistant/lovelace/ui-lovelace.yaml` |
+| Installation Type | Config Path | Notes |
+|-------------------|-------------|-------|
+| Home Assistant OS | `/config` | SSH directly into HA |
+| Docker (SSH to container) | `/config` | Via `docker exec` |
+| Docker (SSH to host) | Your volume mount path (e.g. `/home/user/ha/config`) | Use `--remote` with the host path, not `/config` |
+| Virtual Environment | `/home/homeassistant/.homeassistant` | Direct SSH |
 
 ---
 
@@ -438,13 +443,23 @@ docker restart homeassistant
 
 ### Deployment Issues
 
-**Problem**: "Upload failed"
+**Problem**: "Upload failed" or "No such file"
 
 **Solutions**:
 1. Check local file exists and is readable
 2. Verify remote directory exists and is writable
 3. Ensure you have sufficient disk space
 4. Check file permissions on remote server
+5. **Do not use `~` in `--remote` paths** — SFTP does not expand tilde. Use absolute paths (e.g. `/home/user/config/...` instead of `~/config/...`)
+
+**Problem**: "Permission denied" on upload
+
+**Solutions**:
+1. Check file/directory ownership on the remote server
+2. For Docker setups, directories created by the container may be owned by root. Fix with:
+   ```bash
+   sudo chown -R youruser:youruser /path/to/ha/config/lovelace /path/to/ha/config/themes
+   ```
 
 **Problem**: Dashboard not updating after deployment
 
@@ -563,13 +578,12 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --ke
 ## Security Best Practices
 
 1. **Use SSH key authentication** instead of passwords
-2. **Limit SSH access** to specific IP addresses
-3. **Use sudo** only when necessary
+2. **Never commit tokens or passwords** — pass `--token` and `--password` via environment variables or command line, never hardcode in scripts
+3. **Limit SSH access** to specific IP addresses
 4. **Keep backups** of your configurations
 5. **Validate YAML** before deployment
-6. **Test changes** in a development environment first
-7. **Review logs** after each deployment
-8. **Use version control** (Git) for your YAML files
+6. **Use the staging workflow** to test changes before going live
+7. **Use version control** (Git) for your YAML files
 
 ---
 
@@ -581,17 +595,6 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user homeassistant --ke
 - [SSH Configuration](https://www.home-assistant.io/docs/configuration/yaml/)
 - [Home Assistant API](https://developers.home-assistant.io/docs/api/)
 - [Home Assistant Community](https://community.home-assistant.io/)
-
----
-
-## Support
-
-If you encounter issues:
-
-1. Check the [Troubleshooting](#troubleshooting) section
-2. Review Home Assistant logs: Settings → System → Logs
-3. Search the [Home Assistant Community](https://community.home-assistant.io/)
-4. Check the [Home Assistant GitHub Issues](https://github.com/home-assistant/home-assistant/issues)
 
 ---
 
