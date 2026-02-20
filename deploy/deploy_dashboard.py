@@ -158,6 +158,7 @@ class HomeAssistantDeployer:
                     exit_status = stdout.channel.recv_exit_status()
                     if exit_status == 0:
                         print("✓ Configuration reloaded successfully via HA REST API")
+                        self._reload_themes()
                         self._browser_refresh()
                         return True
                     else:
@@ -191,6 +192,26 @@ class HomeAssistantDeployer:
             print(f"✗ Reload failed: {e}")
             return False
     
+    def _reload_themes(self):
+        """Reload themes via HA REST API."""
+        if not self.token:
+            return
+        curl_cmd = (
+            f'curl -sf -X POST'
+            f' -H "Authorization: Bearer {self.token}"'
+            f' -H "Content-Type: application/json"'
+            f' http://localhost:8123/api/services/frontend/reload_themes'
+        )
+        try:
+            stdin, stdout, stderr = self.ssh_client.exec_command(curl_cmd, timeout=10)
+            exit_status = stdout.channel.recv_exit_status()
+            if exit_status == 0:
+                print("✓ Themes reloaded via HA REST API")
+            else:
+                print("⚠ Theme reload failed")
+        except Exception:
+            pass
+
     def _browser_refresh(self):
         """Refresh all connected browsers via Browser Mod (if installed)."""
         if not self.token:
