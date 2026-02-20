@@ -115,7 +115,6 @@ The Python deployment script provides following features:
 --theme                  Also deploy the theme file (production mode only)
 --theme-local FILE       Local prod theme file (default: themes/my_dashboard_theme.yaml)
 --theme-remote PATH      Remote path for theme (default: /config/themes/my_dashboard_theme.yaml)
---theme-staging-local FILE  Local staging theme file (default: themes/my_dashboard_theme_staging.yaml)
 --stage                  Deploy to staging (dashboard + staging theme, mutually exclusive with --promote)
 --promote                Promote to production (dashboard + prod theme, mutually exclusive with --stage)
 --token TOKEN            HA Long-Lived Access Token (for API-based reload after deploy)
@@ -157,8 +156,8 @@ The deploy script supports a staging/production workflow for testing dashboard c
 ### How It Works
 
 - **Two dashboards** on the HA server: "My Dashboard" (prod) and "My Dashboard (Staging)"
-- **Two themes**: "My Dashboard Theme" (prod) and "My Dashboard Theme - Staging"
-- `--stage` reads the dashboard YAML, replaces theme references in-memory, and uploads to the staging path. The staging filename is derived from `--remote` (e.g. `my-dashboard.yaml` → `my-dashboard-staging.yaml`). Local files are never modified.
+- **Two themes** on the HA server: "My Dashboard Theme" (prod) and "My Dashboard Theme - Staging" — but only **one theme file** in the repo (`themes/my_dashboard_theme.yaml`)
+- `--stage` reads both the dashboard YAML and the theme file, replaces names in-memory, and uploads to the staging paths. The staging filenames are derived from `--remote` and `--theme-remote` (e.g. `my-dashboard.yaml` → `my-dashboard-staging.yaml`, `my_dashboard_theme.yaml` → `my_dashboard_theme-staging.yaml`). Local files are never modified.
 - `--promote` deploys local files as-is to production paths (dashboard + prod theme)
 - Both flags respect `--remote` for path resolution
 - Both dashboards always exist in the HA sidebar
@@ -172,7 +171,8 @@ python deploy/deploy_dashboard.py --host 192.168.1.100 --user root --key ~/.ssh/
 This will:
 1. Read `my-dashboard.yaml` and replace all `My Dashboard Theme` references with `My Dashboard Theme - Staging` in memory
 2. Upload the modified dashboard to the staging path (derived from `--remote`, e.g. `/config/lovelace/my-dashboard-staging.yaml`)
-3. Upload `themes/my_dashboard_theme_staging.yaml` to `/config/themes/`
+3. Read `themes/my_dashboard_theme.yaml` and replace the top-level key in memory to `My Dashboard Theme - Staging:`
+4. Upload the modified theme to the staging path (derived from `--theme-remote`, e.g. `/config/themes/my_dashboard_theme-staging.yaml`)
 
 ### Promote to Production
 
@@ -187,8 +187,7 @@ This deploys local files as-is (with prod theme name) to production paths, inclu
 ### Typical Workflow
 
 1. Make changes locally to `my-dashboard.yaml` and/or `themes/my_dashboard_theme.yaml`
-2. If theme changed, sync changes to `themes/my_dashboard_theme_staging.yaml` (same values, different top-level key)
-3. Deploy to staging: `--stage`
+2. Deploy to staging: `--stage`
 4. Open HA sidebar → "My Dashboard (Staging)" → verify changes
 5. Promote to production: `--promote`
 6. Verify production dashboard

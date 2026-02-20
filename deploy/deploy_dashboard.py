@@ -236,7 +236,6 @@ def main():
     repo_root = script_dir.parent
     default_local = str(repo_root / "my-dashboard.yaml")
     default_theme_local = str(repo_root / "themes" / "my_dashboard_theme.yaml")
-    default_theme_staging_local = str(repo_root / "themes" / "my_dashboard_theme_staging.yaml")
 
     parser = argparse.ArgumentParser(
         description="Deploy Home Assistant dashboard and theme via SSH",
@@ -275,8 +274,6 @@ Examples:
                        help='Local theme file (default: themes/my_dashboard_theme.yaml)')
     parser.add_argument('--theme-remote',
                        help='Remote path for theme file (default: /config/themes/my_dashboard_theme.yaml)')
-    parser.add_argument('--theme-staging-local', default=default_theme_staging_local,
-                       help='Local staging theme file (default: themes/my_dashboard_theme_staging.yaml)')
 
     # Staging/promotion mode (mutually exclusive)
     deploy_mode = parser.add_mutually_exclusive_group()
@@ -312,9 +309,7 @@ Examples:
     if not os.path.exists(args.local):
         print(f"Error: Local dashboard file not found: {args.local}")
         sys.exit(1)
-    if args.stage and not os.path.exists(args.theme_staging_local):
-        print(f"Error: Local staging theme file not found: {args.theme_staging_local}")
-        sys.exit(1)
+
     if (args.theme or args.promote) and not os.path.exists(args.theme_local):
         print(f"Error: Local theme file not found: {args.theme_local}")
         sys.exit(1)
@@ -345,11 +340,12 @@ Examples:
             staging_dashboard_remote = (
                 f"{dashboard_dir}/{remote_stem}-staging{remote_ext}"
             )
-            staging_theme_remote = (
-                f"{theme_dir}/"
-                f"{os.path.basename(args.theme_staging_local)}"
-            )
+            # Derive staging theme remote path from prod theme filename (foo.yaml → foo-staging.yaml)
+            theme_name = os.path.basename(args.theme_remote)
+            theme_stem, theme_ext = os.path.splitext(theme_name)
+            staging_theme_remote = f"{theme_dir}/{theme_stem}-staging{theme_ext}"
 
+            # Dashboard: replace theme name in-memory
             dashboard_content = Path(args.local).read_text(encoding="utf-8")
             dashboard_content = dashboard_content.replace(
                 HomeAssistantDeployer.PROD_THEME_NAME,
@@ -364,12 +360,19 @@ Examples:
                 sys.exit(1)
             deployed.append("staging dashboard")
 
-            # Theme: upload staging theme file
+            # Theme: replace top-level key in-memory (no second file needed)
             print()
+            theme_content = Path(args.theme_local).read_text(encoding="utf-8")
+            theme_content = theme_content.replace(
+                HomeAssistantDeployer.PROD_THEME_NAME + ":",
+                HomeAssistantDeployer.STAGING_THEME_NAME + ":",
+                1
+            )
+
             if not args.no_backup:
                 deployer.backup_file(staging_theme_remote, "staging theme")
 
-            if not deployer.deploy_file(args.theme_staging_local, staging_theme_remote, "staging theme"):
+            if not deployer.deploy_content(theme_content, staging_theme_remote, "staging theme"):
                 print("\n✗ Staging theme deployment failed")
                 sys.exit(1)
             deployed.append("staging theme")
