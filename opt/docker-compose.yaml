@@ -1,6 +1,5 @@
 services:
 
-
   portainer:
     container_name: portainer
     image: portainer/portainer-ce:2.21.5
@@ -92,6 +91,20 @@ services:
        - /home/hv/matter-server-data:/data
        - /run/dbus:/run/dbus:ro
     network_mode: host
+
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      # Absolute path to your home data directory
+      - /home/hv/ollama:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1 #Keep models in RAM once they are loaded
+    restart: unless-stopped
+    
 
 
 volumes:
