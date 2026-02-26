@@ -36,6 +36,7 @@ services:
       - 1883:1883
       - 9001:9001
 
+
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -67,8 +68,8 @@ services:
         max-size: 10m
         max-file: "3"
     networks:
-      my_home_net:                                                                                                              
-        ipv4_address: 172.28.0.30  # This is the "Static IP" of this docker    
+      my_home_net:
+        ipv4_address: 172.28.0.30  # This is the "Static IP" of this docker
 
 
   tunnel:
@@ -93,14 +94,6 @@ services:
     network_mode: host
 
 
-  mermaid-live:
-    image: ghcr.io/mermaid-js/mermaid-live-editor:latest
-    container_name: mermaid-live-editor
-    ports:
-      - "8000:8080"          # Change 8000 to any free port you like
-    restart: unless-stopped
-
-
 volumes:
   data:
   config:
@@ -112,3 +105,5 @@ networks:
     ipam:
       config:
         - subnet: 172.28.0.0/16
+
+
